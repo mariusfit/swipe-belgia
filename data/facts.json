@@ -1,0 +1,269 @@
+{
+  "translationGroupId": "qa.rental-guarantee-regions",
+  "factRevision": "facts-private-routes-rental-guarantee-2026-07-30.2",
+  "scope": {
+    "includes": [
+      "private-main-residence-rental-guarantee",
+      "current-regional-cap",
+      "current-regional-forms",
+      "regional-guarantee-assistance",
+      "neutral-guarantee-institution-contract-checks"
+    ],
+    "excludes": [
+      "social-housing",
+      "commercial-lease",
+      "tourist-accommodation",
+      "student-lease",
+      "colocation",
+      "historic-contract-regime"
+    ]
+  },
+  "applicability": [
+    {
+      "id": "flanders-2019",
+      "jurisdiction": "be-flanders",
+      "status": "confirmed",
+      "effectiveFrom": "2019-01-01",
+      "conditions": ["private-main-residence"],
+      "sourceRefs": ["vl-rent"]
+    },
+    {
+      "id": "brussels-2024",
+      "jurisdiction": "be-brussels",
+      "status": "confirmed",
+      "effectiveFrom": "2024-11-01",
+      "conditions": ["private-main-residence", "lease-concluded-or-renewed"],
+      "sourceRefs": ["bxl-rent"]
+    },
+    {
+      "id": "wallonia-2023",
+      "jurisdiction": "be-wallonia",
+      "status": "confirmed",
+      "effectiveFrom": "2023-06-01",
+      "conditions": ["private-main-residence"],
+      "sourceRefs": ["wal-rent-2023"]
+    },
+    {
+      "id": "german-speaking-community-current-guarantee",
+      "jurisdiction": "be-german-speaking-community",
+      "status": "confirmed",
+      "effectiveFrom": null,
+      "conditions": [
+        "private-main-residence",
+        "maximum-two-months",
+        "blocked-account-in-tenant-name"
+      ],
+      "sourceRefs": ["dg-rent-guarantee"]
+    },
+    {
+      "id": "flanders-assistance",
+      "jurisdiction": "be-flanders",
+      "status": "conditional",
+      "effectiveFrom": null,
+      "conditions": ["eligible-main-residence-applicant"],
+      "sourceRefs": ["vl-loan"]
+    },
+    {
+      "id": "brussels-assistance",
+      "jurisdiction": "be-brussels",
+      "status": "conditional",
+      "effectiveFrom": null,
+      "conditions": ["eligible-applicant"],
+      "sourceRefs": ["bxl-aid"]
+    },
+    {
+      "id": "wallonia-assistance",
+      "jurisdiction": "be-wallonia",
+      "status": "conditional",
+      "effectiveFrom": null,
+      "conditions": ["eligible-main-residence-applicant"],
+      "sourceRefs": ["wal-loan"]
+    },
+    {
+      "id": "regional-guarantee-institution-contract-check",
+      "jurisdiction": "be",
+      "status": "conditional",
+      "effectiveFrom": null,
+      "conditions": [
+        "regional-cap-and-form-identified-first",
+        "institution-cost-data-blocking-and-release-terms-requested",
+        "public-assistance-decision-kept-separate"
+      ],
+      "sourceRefs": [
+        "vl-rent",
+        "bxl-rent",
+        "wal-rent-2023",
+        "dg-rent-guarantee",
+        "vl-loan",
+        "bxl-aid",
+        "wal-loan"
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "id": "public-assistance-does-not-set-private-contract-outcome",
+      "applicabilityIds": ["regional-guarantee-institution-contract-check"],
+      "note": "Ajutorul sau împrumutul regional și contractul instituției care constituie garanția au condiții distincte; costurile, datele, blocarea și eliberarea trebuie confirmate separat.",
+      "warningClaimId": "warning:public-assistance-and-private-guarantee-contract-differ",
+      "sourceRefs": [
+        "vl-loan",
+        "bxl-aid",
+        "wal-loan",
+        "vl-rent",
+        "bxl-rent",
+        "wal-rent-2023",
+        "dg-rent-guarantee"
+      ],
+      "publicationImpact": "warning"
+    }
+  ],
+  "sources": [
+    {
+      "id": "vl-rent",
+      "label": "Vlaanderen — huurwaarborg pentru locuințe private",
+      "url": "https://www.vlaanderen.be/bouwen-wonen-en-energie/huren-en-verhuren/huurprijs-en-huurwaarborg/huurwaarborg",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30"
+    },
+    {
+      "id": "vl-loan",
+      "label": "Vlaanderen — împrumutul pentru garanția locativă",
+      "url": "https://www.vlaanderen.be/huurwaarborglening-van-het-vlaams-woningfonds",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30"
+    },
+    {
+      "id": "bxl-rent",
+      "label": "Bruxelles Logement — garantie locative",
+      "url": "https://be.brussels/fr/logement/location/bail-dhabitation/garantie-locative",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30"
+    },
+    {
+      "id": "bxl-aid",
+      "label": "Fonds du Logement Bruxelles — ajutor pentru garanție",
+      "url": "https://fonds.brussels/fr/garantie-locative",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30"
+    },
+    {
+      "id": "wal-rent-2023",
+      "label": "WALLEX — garanția locativă, articolul 62",
+      "url": "https://wallex.wallonie.be/eli/loi-decret/2018/03/15/2018201408/2024/07/01",
+      "authorityTier": "primary",
+      "lastChecked": "2026-07-30"
+    },
+    {
+      "id": "wal-loan",
+      "label": "SWCS — împrumutul pentru garanția locativă",
+      "url": "https://www.swcs.be/rapports-annuels/rapport-annuel-swcs-2024/la-garantie-locative",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30"
+    },
+    {
+      "id": "dg-rent-guarantee",
+      "label": "Ostbelgien — garanția pentru o locuință închiriată",
+      "url": "https://ostbelgienlive.be/Desktopdefault.aspx/tabid-8222/13465_read-74078/",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Indică pentru Comunitatea germanofonă plafonul actual de maximum două luni și depunerea într-un cont blocat pe numele chiriașului.",
+      "scope": "german-speaking-community",
+      "kind": "procedure"
+    },
+    {
+      "id": "nbb-supervision",
+      "label": "Banca Națională a Belgiei — instituții supravegheate",
+      "url": "https://www.nbb.be/en/financial-supervision-and-resolution/supervision-financial-institutions",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "verificarea instituției financiare",
+      "scope": "nbb-supervision",
+      "kind": "service"
+    }
+  ],
+  "claimSupport": {
+    "summary": [
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee",
+      "vl-loan",
+      "bxl-aid",
+      "wal-loan"
+    ],
+    "short-answer": [
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee",
+      "vl-loan",
+      "bxl-aid",
+      "wal-loan"
+    ],
+    "step:flanders-2019-cap": ["vl-rent", "vl-loan"],
+    "step:brussels-2024-cap": ["bxl-rent", "bxl-aid"],
+    "step:wallonia-2023-cap": ["wal-rent-2023", "wal-loan"],
+    "step:german-speaking-community-cap": ["dg-rent-guarantee"],
+    "step:record-form-and-amount": [
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee",
+      "vl-loan",
+      "bxl-aid",
+      "wal-loan",
+      "nbb-supervision"
+    ],
+    "document:dated-rental-contract": [
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee"
+    ],
+    "document:guarantee-form-and-amount": [
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee",
+      "vl-loan",
+      "bxl-aid",
+      "wal-loan"
+    ],
+    "warning:no-belgium-wide-formula": [
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee"
+    ],
+    "warning:old-contract-rules": [
+      "vl-rent",
+      "vl-loan",
+      "bxl-rent",
+      "bxl-aid",
+      "wal-rent-2023",
+      "wal-loan"
+    ],
+    "warning:public-assistance-and-private-guarantee-contract-differ": [
+      "vl-loan",
+      "bxl-aid",
+      "wal-loan",
+      "vl-rent",
+      "bxl-rent",
+      "wal-rent-2023",
+      "dg-rent-guarantee"
+    ]
+  },
+  "lastVerified": "2026-07-30",
+  "reviewPolicy": {
+    "maxAgeDays": 90,
+    "triggers": [
+      "source-content-change",
+      "source-unavailable",
+      "law-or-decree-change",
+      "procedure-or-form-change",
+      "fee-or-threshold-change",
+      "official-clarification"
+    ]
+  }
+}

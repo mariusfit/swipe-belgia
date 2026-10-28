@@ -1,0 +1,24 @@
+/* ===== v5: bară laterală comună (în #phone), pagini mai curate ===== */
+:root{--barw:58px}
+#side-bar{position:absolute;right:6px;bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px) + 10px);z-index:8;display:flex;flex-direction:column;align-items:center;gap:6px}
+.view:not(#v-flux){right:var(--barw)}
+.sb[aria-disabled=true]{opacity:.42}
+.sb[aria-disabled=true] span.c{border-style:dashed}
+.sb.hm.back span.c{border-color:var(--yel);color:var(--yel)}
+/* fără antet de cartonaș: doar segmentele sus */
+.fc{padding-top:52px}
+.fc.sm{padding-top:52px}
+.fc.sm:before{inset:46px 62px 6px 10px}
+@media (max-height:800px){.fc{padding-top:52px}.fc.sm{padding-top:52px}.fc.sm:before{inset:46px 62px 6px 10px}}
+/* indiciile permanente din cartonașe dispar; rămâne doar „mai adânc” */
+.fc-body .hint{display:none!important}
+.fc-act{margin-top:6px}
+/* Match / Adevărat-Fals: contor simplu */
+.dk-head{padding-bottom:2px}
+/* vot în Citește tot */
+.vote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px;font-size:var(--f-read);font-weight:700}
+.vote .btn[aria-pressed=true]{background:var(--grn);color:#04210f;border-color:var(--grn)}
+.vote #a-dn[aria-pressed=true]{background:var(--yel);color:#1b1500;border-color:var(--yel)}
+#proto-note{border-color:rgba(255,210,63,.35)}
+.deck{width:min(330px,calc(100% - 20px))}
+#const{width:calc(100% + 24px);margin-left:-12px}

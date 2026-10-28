@@ -1,0 +1,158 @@
+{
+  "translationGroupId": "qa.rental-guarantee-regions",
+  "contentRevision": "private-routes-rental-guarantee-ro-2026-07-30.2",
+  "factRevision": "facts-private-routes-rental-guarantee-2026-07-30.2",
+  "provenance": {
+    "sourceLanguage": "ro",
+    "sourceRevision": "private-routes-rental-guarantee-ro-2026-07-30.2",
+    "method": "source"
+  },
+  "lang": "ro",
+  "routeSlug": "garantie-locativa-suma-maxima-regiuni",
+  "categoryId": "garantie-locativa",
+  "eyebrow": "Regiune și contract",
+  "title": "Care este suma maximă a garanției în regiunea mea?",
+  "summary": "Pentru reședința principală, identifică regiunea și data contractului, apoi separă plafonul și ajutorul public de forma, costul și eliberarea garanției convenite.",
+  "shortAnswer": "Garanția locativă nu are o singură formulă belgiană: plafonul, forma și ajutorul depind de regiunea locuinței și de data contractului. Verifică regulile curente înainte de plată. Dacă folosești o instituție ori un mecanism privat, cere în scris titularul contului, blocarea, costurile, datele folosite, condițiile de constituire și eliberare și dovada acceptată de proprietar. Un ajutor sau împrumut regional nu aprobă automat contractul privat și nu schimbă plafonul legal.",
+  "steps": [
+    {
+      "id": "flanders-2019-cap",
+      "title": "Flandra — alege una dintre formele permise",
+      "body": "Pentru contractele încheiate de la 1 ianuarie 2019, plafonul este trei luni. Chiriașul poate alege un cont individualizat blocat, o garanție reală la o instituție financiară ori garanția bancară prin OCMW; cu acordul proprietarului este posibilă și o cauțiune personală. Formele nu se combină. Dacă nu poți constitui suma, Vlaams Woningfonds oferă, sub condiții, un împrumut fără dobândă pentru locuința principală din Flandra."
+    },
+    {
+      "id": "brussels-2024-cap",
+      "title": "Bruxelles — verifică cele cinci forme și ajutorul regional",
+      "body": "Pentru contractele încheiate sau reînnoite de la 1 noiembrie 2024, plafonul este două luni de chirie. Chiriașul alege între cont individualizat, garanție bancară prin CPAS, garanție bancară constituită progresiv în cel mult trei ani, garanție reală la o instituție financiară și cauțiune personală. Fonds du Logement poate acorda, după analiza situației, un credit la 0% sau ajutor prin BRU-GAL."
+    },
+    {
+      "id": "wallonia-2023-cap",
+      "title": "Valonia — alege una dintre cele trei forme și verifică SWCS",
+      "body": "Din 1 iunie 2023, garanția pentru reședința principală este limitată la două luni. Chiriașul alege un cont individualizat, o garanție bancară constituită progresiv sau o garanție bancară prin CPAS. Dacă nu dispui de sumă, SWCS poate acorda, sub condiții, un împrumut la 0% pentru garanția unei reședințe principale din Valonia."
+    },
+    {
+      "id": "german-speaking-community-cap",
+      "title": "Comunitatea germanofonă — maximum două luni într-un cont blocat",
+      "body": "Pagina oficială Ostbelgien indică pentru garanția depusă înaintea contractului un plafon de maximum două luni de chirie și un cont blocat deschis pe numele chiriașului. Păstrează dovada că titularul și suma corespund contractului și verifică la Ostbelgien sau VSZ orice formă ori ajutor care nu este descris pe pagina oficială."
+    },
+    {
+      "id": "record-form-and-amount",
+      "title": "Cere forma și suma în scris",
+      "body": "Mai întâi alege numai o formă permisă de regiune la data contractului. Dacă este necesară o instituție financiară, verific-o în registrele NBB/FSMA și cere în scris, înainte de transfer, costul total și dobânda, titularul contului, dovada pentru proprietar, durata, folosirea datelor și condițiile de refuz, eliberare și închidere. Cere proprietarului forma legală și datele necesare, dar nu vira banii în contul său personal când legea cere cont blocat pe numele chiriașului. Pentru ajutor, cere mai întâi decizia organismului regional; ajutorul nu înlocuiește contractul cu instituția și nu schimbă plafonul. Pentru e-DEPO și pentru eliberarea finală folosește ghidurile dedicate. Verifică starea locuinței, soldul și acordul scris ori hotărârea aplicabilă; nu semna înaintea calculului final, iar banca nu decide litigiul."
+    }
+  ],
+  "documents": [
+    {
+      "id": "dated-rental-contract",
+      "name": "Contractul de închiriere cu data semnării sau reînnoirii",
+      "note": "Data stabilește regimul aplicabil și trebuie verificată pentru fiecare jurisdicție, inclusiv Comunitatea germanofonă.",
+      "stage": "before"
+    },
+    {
+      "id": "guarantee-form-and-amount",
+      "name": "Dovada formei și sumei garanției",
+      "note": "Păstrează plafonul regional, suma și forma, titularul contului, costurile, blocarea, dovada proprietarului, condițiile de eliberare și decizia separată pentru orice ajutor public.",
+      "stage": "after"
+    }
+  ],
+  "warnings": [
+    {
+      "id": "no-belgium-wide-formula",
+      "text": "Belgia nu are o singură formulă pentru garanția locativă; verifică regiunea și data contractului înainte să calculezi suma."
+    },
+    {
+      "id": "old-contract-rules",
+      "text": "Pentru contractele flamande anterioare lui 2019 și cele bruxelleze anterioare datei de 1 noiembrie 2024, verifică regimul vechi. Împrumuturile și ajutoarele regionale au criterii proprii și nu sunt acordate automat."
+    },
+    {
+      "id": "public-assistance-and-private-guarantee-contract-differ",
+      "text": "Ajutorul ori împrumutul regional și contractul cu instituția care constituie garanția sunt decizii diferite; verifică separat costurile, datele, blocarea și eliberarea."
+    }
+  ],
+  "relatedTranslationGroupIds": [
+    "qa.rental-guarantee-edepo",
+    "qa.rental-guarantee-release"
+  ],
+  "audiences": ["tenant"],
+  "regions": ["flanders", "brussels", "wallonia", "german-speaking-community"],
+  "sources": [
+    {
+      "label": "Vlaanderen — huurwaarborg pentru locuințe private",
+      "url": "https://www.vlaanderen.be/bouwen-wonen-en-energie/huren-en-verhuren/huurprijs-en-huurwaarborg/huurwaarborg",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Precizează plafonul și regulile garanției pentru locuințele private din Flandra.",
+      "scope": "flanders",
+      "kind": "procedure"
+    },
+    {
+      "label": "Vlaanderen — împrumutul pentru garanția locativă",
+      "url": "https://www.vlaanderen.be/huurwaarborglening-van-het-vlaams-woningfonds",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Explică împrumutul fără dobândă al Vlaams Woningfonds și condițiile generale de acces.",
+      "scope": "flanders",
+      "kind": "service"
+    },
+    {
+      "label": "Bruxelles Logement — garantie locative",
+      "url": "https://be.brussels/fr/logement/location/bail-dhabitation/garantie-locative",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Precizează formele și plafonul aplicabil contractelor de locuință din Bruxelles.",
+      "scope": "brussels",
+      "kind": "procedure"
+    },
+    {
+      "label": "Fonds du Logement Bruxelles — ajutor pentru garanție",
+      "url": "https://fonds.brussels/fr/garantie-locative",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Prezintă creditul la 0%, ruta BRU-GAL și analiza situației financiare a solicitantului.",
+      "scope": "brussels",
+      "kind": "service"
+    },
+    {
+      "label": "WALLEX — garanția locativă, articolul 62",
+      "url": "https://wallex.wallonie.be/eli/loi-decret/2018/03/15/2018201408/2024/07/01",
+      "authorityTier": "primary",
+      "lastChecked": "2026-07-30",
+      "description": "Conține plafonul actual și cele trei forme reglementate pentru reședința principală în Valonia.",
+      "scope": "wallonia",
+      "kind": "legal-text"
+    },
+    {
+      "label": "SWCS — împrumutul pentru garanția locativă",
+      "url": "https://www.swcs.be/rapports-annuels/rapport-annuel-swcs-2024/la-garantie-locative",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Prezintă împrumutul valon la 0% pentru garanția locativă și principalele condiții de acces.",
+      "scope": "wallonia",
+      "kind": "service"
+    },
+    {
+      "label": "Ostbelgien — garanția pentru o locuință închiriată",
+      "url": "https://ostbelgienlive.be/Desktopdefault.aspx/tabid-8222/13465_read-74078/",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "Indică pentru Comunitatea germanofonă plafonul actual de maximum două luni și depunerea într-un cont blocat pe numele chiriașului.",
+      "scope": "german-speaking-community",
+      "kind": "procedure"
+    },
+    {
+      "label": "Banca Națională a Belgiei — instituții supravegheate",
+      "url": "https://www.nbb.be/en/financial-supervision-and-resolution/supervision-financial-institutions",
+      "authorityTier": "official",
+      "lastChecked": "2026-07-30",
+      "description": "verificarea instituției financiare",
+      "scope": "nbb-supervision",
+      "kind": "service"
+    }
+  ],
+  "lastVerified": "2026-07-30",
+  "editorialStatus": "reviewed",
+  "translationStatus": "approved",
+  "reviewerRole": "revizie editorială pe surse oficiale",
+  "seoTitle": "Garanția locativă: forme și ajutoare pe regiuni",
+  "seoDescription": "Compară plafonul și formele garanției locative în Flandra, Bruxelles, Valonia și Comunitatea germanofonă și verifică ajutorul disponibil."
+}

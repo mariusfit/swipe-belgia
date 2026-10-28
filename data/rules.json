@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "translationGroupId": "qa.rental-guarantee-regions",
+  "lang": "ro",
+  "guideSha256": "f3b3031515a2bf5c91f36d31834518d1e72078243f21eb8820efa2ae9401598b",
+  "factProfileSha256": "b4b01225554e12e7c51ea8ab7ba2e532783fc2714a874f99fd5a9eff0256bb0f",
+  "contentRevision": "private-routes-rental-guarantee-ro-2026-07-30.2",
+  "factRevision": "facts-private-routes-rental-guarantee-2026-07-30.2",
+  "status": "proposed",
+  "payload": {
+    "facts": [
+      {
+        "id": "f-flanders-cap",
+        "kind": "cap",
+        "claimKey": "step:flanders-2019-cap",
+        "field": "step:flanders-2019-cap:body",
+        "quote": "plafonul este trei luni",
+        "value": 3,
+        "unit": "luni de chirie",
+        "validFrom": "2019-01-01",
+        "sourceRefs": ["vl-rent"]
+      },
+      {
+        "id": "f-brussels-cap",
+        "kind": "cap",
+        "claimKey": "step:brussels-2024-cap",
+        "field": "step:brussels-2024-cap:body",
+        "quote": "plafonul este două luni de chirie",
+        "value": 2,
+        "unit": "luni de chirie",
+        "validFrom": "2024-11-01",
+        "sourceRefs": ["bxl-rent"]
+      },
+      {
+        "id": "f-wallonia-cap",
+        "kind": "cap",
+        "claimKey": "step:wallonia-2023-cap",
+        "field": "step:wallonia-2023-cap:body",
+        "quote": "limitată la două luni",
+        "value": 2,
+        "unit": "luni de chirie",
+        "validFrom": "2023-06-01",
+        "sourceRefs": ["wal-rent-2023"]
+      },
+      {
+        "id": "f-german-community-cap",
+        "kind": "cap",
+        "claimKey": "step:german-speaking-community-cap",
+        "field": "step:german-speaking-community-cap:body",
+        "quote": "maximum două luni de chirie",
+        "value": 2,
+        "unit": "luni de chirie",
+        "sourceRefs": ["dg-rent-guarantee"]
+      }
+    ],
+    "graphics": [
+      {
+        "id": "g-rental-guarantee-regions",
+        "type": "region-bars",
+        "title": "graphics-region-title",
+        "factIds": [
+          "f-flanders-cap",
+          "f-brussels-cap",
+          "f-wallonia-cap",
+          "f-german-community-cap"
+        ],
+        "calc": {
+          "kind": "cap-times-input",
+          "input": {
+            "id": "monthly-rent-example",
+            "min": 300,
+            "max": 2000,
+            "step": 50,
+            "default": 800,
+            "isExample": true,
+            "label": "graphics-rent-input"
+          }
+        },
+        "expect": [
+          {
+            "input": 300,
+            "outputs": {
+              "flanders-cap": 900,
+              "brussels-cap": 600,
+              "wallonia-cap": 600,
+              "german-community-cap": 600
+            }
+          },
+          {
+            "input": 800,
+            "outputs": {
+              "flanders-cap": 2400,
+              "brussels-cap": 1600,
+              "wallonia-cap": 1600,
+              "german-community-cap": 1600
+            }
+          },
+          {
+            "input": 1200,
+            "outputs": {
+              "flanders-cap": 3600,
+              "brussels-cap": 2400,
+              "wallonia-cap": 2400,
+              "german-community-cap": 2400
+            }
+          },
+          {
+            "input": 2000,
+            "outputs": {
+              "flanders-cap": 6000,
+              "brussels-cap": 4000,
+              "wallonia-cap": 4000,
+              "german-community-cap": 4000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "copy": [
+    {
+      "id": "graphics-region-title",
+      "text": "Plafoane după regiune",
+      "origin": "editorial",
+      "status": "proposed",
+      "evidence": [
+        {
+          "claimKey": "warning:no-belgium-wide-formula",
+          "field": "warning:no-belgium-wide-formula:text",
+          "quote": "Belgia nu are o singură formulă pentru garanția locativă; verifică regiunea și data contractului înainte să calculezi suma.",
+          "sourceRefs": [
+            "vl-rent",
+            "bxl-rent",
+            "wal-rent-2023",
+            "dg-rent-guarantee"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "graphics-rent-input",
+      "text": "Chiria lunară (exemplu)",
+      "origin": "editorial",
+      "status": "proposed",
+      "evidence": [
+        {
+          "claimKey": "warning:no-belgium-wide-formula",
+          "field": "warning:no-belgium-wide-formula:text",
+          "quote": "înainte să calculezi suma.",
+          "sourceRefs": [
+            "vl-rent",
+            "bxl-rent",
+            "wal-rent-2023",
+            "dg-rent-guarantee"
+          ]
+        }
+      ]
+    }
+  ]
+}

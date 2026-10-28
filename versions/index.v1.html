@@ -1,0 +1,1116 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#090b11"><title>Swipe Belgia — prototip vizual</title><style>
+:root{
+ --bg:#090b11;--s1:#131724;--s2:#1b2132;--s3:#262d42;--tx:#f4f6fb;--mu:#aab3c8;--ln:#2e3650;
+ --yel:#ffd23f;--red:#ff5a6b;--grn:#37e3a4;--blu:#62adff;--vio:#b49cff;--gry:#9099ae;
+ --hue:210;--r:22px;--tabh:64px;
+ font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#05070b;color:var(--tx);overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:disabled{cursor:default}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 6px #000}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.fill{fill:currentColor}
+/* ---------- scena desktop ---------- */
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+ background:radial-gradient(900px 600px at 20% 10%,#1a2140 0,transparent 60%),radial-gradient(800px 600px at 90% 90%,#2a1a2e 0,transparent 55%),#05070b}
+#side{display:none;color:var(--mu);width:290px;position:absolute;left:calc(50% - 195px - 56px - 290px);top:50%;transform:translateY(-50%);font-size:15px;line-height:1.55}
+#side b{color:var(--tx)}
+#side h1{font-size:44px;line-height:1;letter-spacing:-.04em;color:var(--tx);margin-bottom:14px}
+#side h1 span{color:var(--yel)}
+#side kbd{display:inline-block;min-width:26px;text-align:center;padding:2px 7px;border:1px solid var(--ln);border-bottom-width:3px;border-radius:7px;background:var(--s1);color:var(--tx);font:600 13px system-ui}
+#side ul{padding:0;list-style:none;margin:16px 0 0;display:grid;gap:9px}
+#side .note{margin-top:20px;padding:12px 14px;border:1px solid var(--ln);border-radius:14px;background:rgba(255,255,255,.03);font-size:13px}
+#phone{position:relative;width:390px;height:844px;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;
+ overflow:clip;border-radius:46px;box-shadow:0 0 0 10px #0d1018,0 0 0 11px #2a3047,0 40px 90px rgba(0,0,0,.6);transform:scale(var(--sc,1));transform-origin:center;isolation:isolate}
+@media (min-width:1080px){#side{display:block}}
+@media (max-width:520px){
+ #stage{display:block}
+ #phone{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;transform:none}
+}
+/* ---------- bară sus ---------- */
+#top{height:56px;flex:none;display:flex;align-items:center;gap:6px;padding:0 10px 0 16px;position:relative;z-index:5}
+#logo{display:flex;align-items:center;gap:9px;font-weight:900;font-size:19px;letter-spacing:-.03em;flex:1}
+#logo i{display:grid;grid-template-columns:repeat(3,5px);gap:2px;height:20px}
+#logo i b{border-radius:2px}#logo i b:nth-child(1){background:#f4f6fb}#logo i b:nth-child(2){background:var(--yel)}#logo i b:nth-child(3){background:var(--red)}
+.tb{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--tx);background:rgba(255,255,255,.06);transition:background .2s}
+.tb:hover{background:rgba(255,255,255,.14)}
+#banner{flex:none;margin:0 12px 6px;padding:6px 10px;border-radius:10px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.35);color:#ffe9a0;font-size:11.5px;line-height:1.3;display:flex;gap:7px;align-items:center;position:relative;z-index:5}
+#banner:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--yel);flex:none}
+/* ---------- vederi ---------- */
+#main{position:relative;flex:1;min-height:0}
+.view{position:absolute;inset:0;overflow:hidden}
+.view[hidden]{display:none!important}
+#aurora{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.9;
+ background:radial-gradient(420px 320px at 15% 20%,hsl(var(--hue) 80% 45% /.30),transparent 70%),radial-gradient(380px 300px at 90% 70%,hsl(calc(var(--hue) + 70) 80% 50% /.22),transparent 70%);transition:background .6s}
+#tabs{height:calc(var(--tabh) + env(safe-area-inset-bottom,0px));flex:none;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ln);background:rgba(12,15,24,.96);padding-bottom:env(safe-area-inset-bottom,0px);position:relative;z-index:5}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--mu);position:relative;min-height:44px}
+.tab[aria-selected=true]{color:var(--yel)}
+.tab[aria-selected=true]:before{content:"";position:absolute;top:0;width:34px;height:3px;border-radius:0 0 4px 4px;background:var(--yel)}
+.tab .bd{position:absolute;top:6px;left:calc(50% + 6px);min-width:17px;height:17px;border-radius:9px;background:var(--red);color:#fff;font-size:10.5px;display:grid;place-items:center;padding:0 4px}
+.tab .bd:empty{display:none}
+/* ---------- MATCH ---------- */
+#v-match,#v-af{display:flex;flex-direction:column;align-items:center;padding:4px 0 10px}
+.dk-head{position:relative;z-index:2;width:100%;padding:2px 20px 8px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--mu)}
+.dk-head b{color:var(--tx);font-size:15px}
+.dots{display:flex;gap:4px}.dots i{width:14px;height:4px;border-radius:3px;background:var(--s3);transition:background .3s}.dots i.on{background:var(--yel)}
+.deck{position:relative;z-index:2;width:330px;flex:1;min-height:0;margin:0 auto}
+.sc{position:absolute;inset:0 0 6px;touch-action:none;user-select:none;-webkit-user-select:none;will-change:transform;cursor:grab}
+.sc.d1{pointer-events:none}.sc:active{cursor:grabbing}
+.sc-in{position:absolute;inset:0;border-radius:30px;overflow:hidden;background:linear-gradient(160deg,hsl(var(--h) 55% 24%),hsl(calc(var(--h) + 30) 45% 11%) 70%);border:1px solid hsl(var(--h) 60% 45% /.55);box-shadow:0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;padding:22px 22px 20px;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .15s}
+.sc-in:before{content:"";position:absolute;inset:-30% -20% auto auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,hsl(var(--h) 90% 60% /.38),transparent 65%)}
+.sc .glyph{position:relative;margin:34px auto 0;width:176px;height:176px;display:grid;place-items:center}
+.sc .glyph:before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,hsl(var(--h) 90% 62% /.0),hsl(var(--h) 90% 62% /.55),hsl(var(--h) 90% 62% /.0));animation:spin 9s linear infinite;mask:radial-gradient(circle,transparent 58%,#000 60%)}
+.sc .glyph:after{content:"";position:absolute;inset:14px;border-radius:50%;background:hsl(var(--h) 50% 14% /.8);border:1px solid hsl(var(--h) 70% 55% /.5)}
+.sc .glyph .ic{position:relative;z-index:1;width:80px;height:80px;stroke-width:1.6;color:hsl(var(--h) 95% 78%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sc h2{position:relative;margin-top:auto;font-size:33px;line-height:1.08;letter-spacing:-.03em;font-weight:900}
+.sc .sub{position:relative;margin-top:8px;font-size:14.5px;line-height:1.35;color:#cfd6e8}
+.sc .gd{position:relative;margin-top:12px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:99px;background:rgba(0,0,0,.35);color:#e7ecf8;align-self:flex-start}
+.sc .gd.real{background:rgba(255,210,63,.18);color:#ffe9a0}
+.stamp{position:absolute;top:30px;z-index:3;padding:6px 12px;border:4px solid;border-radius:12px;font-weight:900;font-size:25px;letter-spacing:.04em;opacity:0;pointer-events:none;text-transform:uppercase;background:rgba(0,0,0,.25)}
+.stamp.yes{left:18px;color:var(--grn);transform:rotate(-14deg)}
+.stamp.no{right:18px;color:#c6ccdc;transform:rotate(14deg)}
+.stamp.fal{right:18px;color:var(--red);transform:rotate(14deg)}
+.acts{position:relative;z-index:2;flex:none;display:flex;align-items:center;justify-content:center;gap:22px;padding-top:6px}
+.rb{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--s1);border:2px solid var(--ln);transition:transform .15s,background .2s}
+.rb:hover{transform:scale(1.07)}.rb:active{transform:scale(.94)}
+.rb .ic{width:30px;height:30px;stroke-width:2.6}
+.rb.y{color:var(--grn);border-color:rgba(55,227,164,.5)}.rb.n{color:#c6ccdc}.rb.f{color:var(--red);border-color:rgba(255,90,107,.5)}
+.rb.sm{width:46px;height:46px}.rb.sm .ic{width:21px;height:21px}
+.hint{position:relative;z-index:2;font-size:12.5px;color:var(--mu);text-align:center;padding:8px 0 0}
+/* Match! */
+#res{position:absolute;inset:0;z-index:4;overflow-y:auto;padding:6px 18px 18px;background:radial-gradient(420px 320px at 15% 10%,hsl(var(--hue) 80% 45% /.28),transparent 70%),radial-gradient(380px 300px at 90% 60%,hsl(calc(var(--hue) + 70) 80% 50% /.2),transparent 70%),var(--bg)}
+#res h2{font-size:42px;font-weight:900;letter-spacing:-.04em;line-height:1;text-align:center;background:linear-gradient(90deg,var(--yel),var(--grn));-webkit-background-clip:text;background-clip:text;color:transparent;padding:4px 0}
+#res .lead{text-align:center;color:var(--mu);font-size:14px;margin:4px 0 0}
+#const{display:block;width:100%;height:auto;margin:2px 0}
+#const .st{animation:tw 4.5s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+#const .nd{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+#const .ln{stroke-dasharray:1;stroke-dashoffset:0;animation:draw .9s ease both;animation-delay:var(--d)}
+@keyframes pop{from{transform:scale(0);opacity:0}}
+@keyframes draw{from{stroke-dashoffset:1}}
+.gl{display:grid;gap:8px;margin-top:8px}
+.gi{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--s1);border:1px solid var(--ln);text-align:left;width:100%}
+.gi.real{border-color:rgba(255,210,63,.6);background:linear-gradient(135deg,rgba(255,210,63,.13),var(--s1))}
+.gi .t{font-weight:700;font-size:14px;line-height:1.3;flex:1}
+.gi .n{display:block;font-weight:500;font-size:11.5px;color:var(--mu);margin-top:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:14px;background:var(--s2);border:1px solid var(--ln);font-weight:800;font-size:14.5px}
+.btn.pri{background:var(--yel);color:#1b1500;border-color:var(--yel)}
+.btn.dng{color:#ffb4bd;border-color:rgba(255,90,107,.5)}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+/* ---------- FLUX ---------- */
+#flux{position:absolute;inset:0;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain}
+#flux::-webkit-scrollbar{display:none}
+.fc{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:44px 70px 14px 16px;display:flex;flex-direction:column;overflow:hidden;
+ background:radial-gradient(360px 300px at 80% 8%,hsl(var(--h) 70% 40% /.30),transparent 70%),linear-gradient(180deg,hsl(var(--h) 35% 11%),var(--bg) 75%)}
+.fc-head{margin:0 -56px 8px 0;display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:99px;background:hsl(var(--h) 60% 50% /.2);border:1px solid hsl(var(--h) 70% 60% /.5);color:hsl(var(--h) 100% 85%);font-weight:800;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.chip .ic{width:15px;height:15px}
+.fc-n{margin-left:auto;font-size:12px;color:var(--mu);font-weight:700}
+.nav{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center}
+.nav:disabled{opacity:.3}
+.nav .ic{width:18px;height:18px}
+.fc h2{font-size:25px;line-height:1.1;letter-spacing:-.03em;font-weight:900;margin:2px 0 10px}
+.fc-body{flex:1;min-height:0;position:relative}
+.fc-foot{font-size:11.5px;color:var(--mu);padding-top:6px;line-height:1.35}
+.ex{display:inline-block;padding:2px 8px;border-radius:6px;background:var(--yel);color:#1b1500;font-weight:900;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+#prog{position:absolute;top:8px;left:12px;right:12px;display:flex;gap:4px;z-index:6;pointer-events:none}
+#prog i{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden}
+#prog i.on{background:var(--yel)}#prog i.cur{background:#fff}
+#side-bar{position:absolute;right:8px;bottom:12px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:7px}
+.sb{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:800;color:#fff;text-shadow:0 1px 3px #000;min-width:50px}
+.sb span.c{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(20,24,38,.78);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px);transition:transform .2s,background .2s}
+.sb:active span.c{transform:scale(.9)}
+.sb[aria-pressed=true] span.c{background:rgba(255,255,255,.95);color:#111}
+.sb.hrt[aria-pressed=true] span.c{background:var(--red);color:#fff;border-color:var(--red)}
+.sb.up[aria-pressed=true] span.c{background:var(--grn);color:#04210f;border-color:var(--grn)}
+.sb.dn[aria-pressed=true] span.c{background:var(--yel);color:#1b1500;border-color:var(--yel)}
+.sb[aria-pressed=true] .ic.fa{fill:currentColor}
+.burst{position:absolute;pointer-events:none;z-index:9;width:0;height:0}
+.burst .big{position:absolute;left:-52px;top:-52px;width:104px;height:104px;color:var(--red);fill:var(--red);stroke:none;animation:bigh .8s ease both}
+.burst .sm{position:absolute;left:-9px;top:-9px;width:18px;height:18px;color:var(--red);fill:var(--red);stroke:none;animation:fly .8s ease-out both}
+@keyframes bigh{0%{transform:scale(0)}25%{transform:scale(1.25)}55%{transform:scale(1)}100%{transform:scale(1.1) translateY(-26px);opacity:0}}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rt)) scale(.5);opacity:0}}
+/* ---------- tipare ---------- */
+.pt{position:absolute;inset:0;display:flex;flex-direction:column;zoom:var(--pk,1)}
+.pt-sub{font-size:13.5px;color:#cdd5e8;line-height:1.35}
+/* sumă */
+.am-big{font-size:86px;line-height:1;font-weight:900;letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:var(--yel);margin-top:2px;white-space:nowrap}
+.am-big small{font-size:38px;margin-left:2px;letter-spacing:0}
+.am-lab{font-size:13px;color:#e9edf8;font-weight:700;margin-top:2px}
+.am-stage{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.am-col{display:flex;flex-direction:column;align-items:center}
+.am-col .bx2{height:130px;display:flex;align-items:flex-end;width:100%;border-bottom:2px solid var(--ln);justify-content:center}
+.am-col .lb{margin-top:7px;font-size:11.5px;text-align:center;line-height:1.25;color:var(--mu)}
+.am-col .lb b{display:block;color:var(--tx);font-size:15px}
+.stack{display:flex;flex-direction:column-reverse;align-items:center;gap:0;width:100%}
+.coin{width:98px;height:34px;border-radius:50%;margin-top:-14px;position:relative;background:radial-gradient(ellipse at 40% 30%,#fff3b0,#ffc531 55%,#c98a00);border:2px solid #8a5d00;box-shadow:0 5px 0 #8a5d00;display:grid;place-items:center;font-weight:900;font-size:15px;color:#7a5200;line-height:1}
+.coin:first-child{margin-top:0}
+.stack.b .coin{background:radial-gradient(ellipse at 40% 30%,#dff4ff,#62adff 55%,#2a68b3);border-color:#1b4a85;box-shadow:0 5px 0 #1b4a85;color:#103a6e}
+.go .coin{animation:coin .6s cubic-bezier(.4,1.5,.6,1) both;animation-delay:calc(var(--k)*.16s + .2s)}
+@keyframes coin{from{transform:translateY(-190px);opacity:0}60%{opacity:1}}
+.am-rng{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.am-rng label{font-size:12.5px;color:var(--mu);display:flex;justify-content:space-between;font-weight:700}
+.am-rng label b{color:var(--tx)}
+input[type=range]{width:100%;accent-color:var(--yel);height:34px;margin:0;background:transparent}
+/* regiuni */
+.rg-svg{width:100%;height:auto;max-height:178px;display:block}
+.hx{fill:var(--c);opacity:.28;stroke:#0a0d15;stroke-width:2;transition:opacity .3s,transform .3s,filter .3s;cursor:pointer;transform-box:fill-box;transform-origin:center}
+.hx.on{opacity:1;filter:drop-shadow(0 0 7px var(--c));transform:translateY(-3px) scale(1.04)}
+.go .hx{animation:hxin .55s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--i)*55ms)}
+@keyframes hxin{from{transform:scale(0);opacity:0}}
+.rg-bars{display:grid;gap:5px;margin-top:6px}
+.rgb{display:grid;grid-template-columns:96px 1fr 52px;gap:8px;align-items:center;min-height:36px;padding:0 6px;border-radius:10px;font-size:12.5px;font-weight:700;text-align:left;border:1px solid transparent;transition:background .2s}
+.rgb.on{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22)}
+.rgb .tr{height:13px;border-radius:7px;background:rgba(255,255,255,.08);overflow:hidden}
+.rgb .fl{display:block;height:100%;border-radius:7px;background:var(--c);width:var(--w);transform-origin:left}
+.go .rgb .fl{animation:grow .8s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i)*.12s + .35s)}
+@keyframes grow{from{transform:scaleX(0)}}
+.rgb em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+.rg-det{margin-top:6px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);font-size:12.5px;line-height:1.4;min-height:78px}
+.rg-det b{font-size:14.5px;white-space:nowrap}
+/* calendar */
+.cal-w{display:flex;justify-content:center;perspective:700px;margin-top:12px}
+.cal{width:200px;border-radius:18px;background:#f6f7fb;color:#12151f;overflow:hidden;box-shadow:0 14px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.12);transform-origin:center 30%;transition:transform .22s ease-in}
+.cal.fo{transform:rotateX(-88deg)}
+.cal.fi{transition:none;transform:rotateX(88deg)}
+.cal .bar{height:36px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:14px;position:relative}
+.cal .bar:before,.cal .bar:after{content:"";position:absolute;top:-7px;width:10px;height:22px;border-radius:6px;background:#2a2f40}
+.cal .bar:before{left:38px}.cal .bar:after{right:38px}
+.cal .dy{font-size:92px;line-height:1;font-weight:900;text-align:center;letter-spacing:-.05em;padding:6px 0 0;font-variant-numeric:tabular-nums}
+.cal .yr{text-align:center;font-weight:800;font-size:17px;color:#46506b;padding-bottom:4px}
+.cal .rn{text-align:center;font-size:12.5px;font-weight:800;background:#e7eaf3;padding:7px 8px;min-height:34px}
+.cal-chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.cc{padding:6px 9px;border-radius:99px;border:1px solid var(--ln);background:var(--s1);font-size:11.5px;font-weight:800;min-height:36px}
+.cc[aria-pressed=true]{background:var(--yel);color:#1b1500;border-color:var(--yel)}
+.cal-cd{margin-top:10px;padding:10px 12px;border-radius:14px;background:rgba(255,90,107,.13);border:1px solid rgba(255,90,107,.45);text-align:center;min-height:64px}
+.cal-cd b{font-size:30px;letter-spacing:-.03em;font-weight:900;display:block;line-height:1.1}
+.cal-cd span{font-size:11.5px;color:#ffd0d5;line-height:1.3;display:block}
+/* ramificare */
+.br-seg{display:flex;gap:6px;margin-bottom:8px}
+.br-q{font-size:15px;font-weight:800;line-height:1.25;margin-bottom:10px;min-height:56px}
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:8px;perspective:900px;height:190px;position:relative}
+.dr{position:relative;border-radius:16px 16px 6px 6px;background:radial-gradient(circle at 50% 120%,var(--glow),#0c0f18 70%);overflow:visible}
+.dr .pn{position:absolute;inset:0;border-radius:16px 16px 6px 6px;background:linear-gradient(160deg,#2c3552,#171c2e);border:2px solid #3b4666;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:900;font-size:34px;letter-spacing:-.02em;transition:transform .7s cubic-bezier(.3,.9,.3,1),opacity .5s;backface-visibility:hidden}
+.dr.dy{--glow:rgba(55,227,164,.7)}.dr.dn{--glow:rgba(255,200,60,.7)}
+.dr.dy .pn{transform-origin:left center}.dr.dn .pn{transform-origin:right center}
+.dr .pn small{font-size:11px;font-weight:700;color:var(--mu);letter-spacing:0}
+.dr .pn:after{content:"";position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--yel)}
+.dr.dy .pn:after{right:12px}.dr.dn .pn:after{left:12px}
+.dr .in{position:absolute;inset:0;display:grid;place-items:center;color:#fff;opacity:0;transition:opacity .4s .25s}
+.dr.open .in{opacity:1}
+.dr .in .ic{width:56px;height:56px;stroke-width:2.2}
+.dr.dy .in{color:var(--grn)}.dr.dn .in{color:var(--yel)}
+.dr.open.dy .pn{transform:rotateY(-108deg)}.dr.open.dn .pn{transform:rotateY(108deg)}
+.dr.dim .pn{filter:brightness(.55)}
+.br-out{margin-top:10px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,.06);font-size:13.5px;line-height:1.4;min-height:130px}
+.br-out b{font-size:15px;display:block;margin-bottom:3px}
+.br-out.ok{background:rgba(55,227,164,.12);border:1px solid rgba(55,227,164,.4)}
+.br-out.warn{background:rgba(255,210,63,.12);border:1px solid rgba(255,210,63,.45)}
+.rmo .dr .pn{display:none}
+/* pași */
+.st-w{position:relative;height:244px;flex:none}
+.st-w svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.st-p{fill:none;stroke:var(--vio);stroke-width:5;stroke-linecap:round}
+.st-p.dsh{stroke-dasharray:2 11;stroke:#6f6a9a}
+.go .st-p{stroke-dasharray:1;stroke-dashoffset:0;animation:draw 1s ease both;animation-delay:var(--d)}
+.go .st-p.dsh{animation:fade .6s ease both;stroke-dasharray:2 11}
+@keyframes fade{from{opacity:0}}
+.nd2{position:absolute;display:flex;align-items:center;gap:9px;width:78%;text-align:left;transform:translateY(-50%);padding:0;min-height:44px}
+.nd2.r{flex-direction:row-reverse;text-align:right}
+.nd2 .no{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:19px;background:var(--vio);color:#190f3a;border:3px solid #fff2;box-shadow:0 0 0 0 rgba(180,156,255,.6)}
+.nd2.x .no{background:var(--s2);color:var(--vio);border:2px dashed var(--vio)}
+.go .nd2 .no{animation:lit .6s ease both;animation-delay:var(--d)}
+@keyframes lit{from{background:var(--s3);color:var(--s3);box-shadow:none;transform:scale(.7)}60%{box-shadow:0 0 0 14px rgba(180,156,255,0)}}
+.nd2 .tt{font-weight:800;font-size:13.5px;line-height:1.25}
+.nd2[aria-pressed=true] .no{outline:3px solid #fff;outline-offset:2px}
+.st-det{margin-top:6px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);font-size:12px;line-height:1.4;flex:1;min-height:0;overflow:auto}
+/* capcană */
+.tp-w{display:flex;flex-direction:column;gap:0}
+.hz{height:38px;background:repeating-linear-gradient(-45deg,#ffd23f 0 16px,#14110a 16px 32px);border-radius:4px;background-size:45px 45px;animation:hzs 2.2s linear infinite}
+@keyframes hzs{to{background-position:45px 0}}
+.go .hz.t{animation:hzin .6s ease-out both,hzs 2.2s linear .6s infinite}
+.go .hz.bt{animation:hzin2 .6s ease-out both,hzs 2.2s linear .6s infinite reverse}
+@keyframes hzin{from{transform:translateX(-120%)}}
+@keyframes hzin2{from{transform:translateX(120%)}}
+.tp-c{margin:-2px 6px;padding:22px 18px 20px;border-radius:6px 6px 18px 18px;background:#1b1710;border:2px solid #ffd23f;border-top:0;border-bottom:0}
+.go .tp-c.shk{animation:shk .9s ease .55s both}
+@keyframes shk{20%{transform:translateX(-7px) rotate(-.6deg)}50%{transform:translateX(6px) rotate(.5deg)}80%{transform:translateX(-3px)}}
+.tp-c .ic{width:46px;height:46px;color:var(--yel)}
+.tp-c h3{font-size:23px;line-height:1.15;margin:6px 0 8px;font-weight:900;color:var(--yel)}
+.tp-c p{font-size:15.5px;line-height:1.5;color:#f1ead0}
+.tp-t{display:flex;gap:8px;margin-bottom:12px}
+/* acte */
+.dc-fan{position:relative;height:250px;margin-top:2px}
+.dcard{position:absolute;left:50%;bottom:6px;width:124px;height:172px;margin-left:-62px;border-radius:14px;background:#f7f4ea;color:#17181f;padding:11px 10px;transform-origin:50% 130%;transform:rotate(calc(var(--a)*1deg)) translateY(var(--y,0px));box-shadow:0 8px 20px rgba(0,0,0,.45);text-align:left;display:flex;flex-direction:column;gap:4px;border:0;transition:transform .3s}
+.dcard:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:14px 0 0 14px;background:hsl(var(--k) 75% 55%)}
+.dcard .w{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--k) 60% 32%);padding-left:5px}
+.dcard .t{font-size:12px;font-weight:800;line-height:1.25;padding-left:5px}
+.dcard.sel{--y:-22px;z-index:20}
+.go .dcard{animation:fan .8s cubic-bezier(.3,1.2,.4,1) both;animation-delay:calc(var(--i)*.07s + .15s)}
+@keyframes fan{from{transform:rotate(0) translateY(0)}}
+.dc-det{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.07);font-size:12.5px;line-height:1.4;min-height:84px}
+.dc-det b{display:block;font-size:14px;margin-bottom:2px}
+/* ce faci acum */
+.ring-w{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.ring{width:72px;height:72px;flex:none;position:relative}
+.ring svg{width:72px;height:72px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring .bg{stroke:var(--s3)}.ring .fg{stroke:var(--grn);transition:stroke-dashoffset .6s cubic-bezier(.3,.9,.3,1)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:16px;font-weight:900}
+.ck{display:grid;gap:6px}
+.ck button{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--ln);text-align:left;font-size:12.5px;line-height:1.3;font-weight:700;min-height:44px}
+.ck button .bx{width:24px;height:24px;border-radius:7px;border:2px solid var(--mu);flex:none;display:grid;place-items:center;color:transparent}
+.ck button[aria-pressed=true]{background:rgba(55,227,164,.12);border-color:rgba(55,227,164,.5)}
+.ck button[aria-pressed=true] .bx{background:var(--grn);border-color:var(--grn);color:#04210f}
+.ck .bx .ic{width:15px;height:15px;stroke-width:3.5}
+.lk{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.lk h4{grid-column:1/-1;margin:4px 0 0;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.lk a{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:10px;background:rgba(98,173,255,.13);border:1px solid rgba(98,173,255,.4);color:#cfe5ff;font-size:11.5px;font-weight:700;text-decoration:none;min-height:40px;line-height:1.2}
+.lk a .ic{width:14px;height:14px}
+/* ---------- foi ---------- */
+#scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:20;opacity:0;pointer-events:none;transition:opacity .25s}
+#scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:88%;z-index:21;background:var(--s1);border-radius:26px 26px 0 0;border-top:1px solid var(--ln);transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.9,.3,1),visibility 0s .35s;display:flex;flex-direction:column;visibility:hidden}
+.sheet.on{transform:none;visibility:visible;transition-delay:0s}
+.sh-h{display:flex;align-items:center;gap:8px;padding:14px 16px 8px}
+.sh-h:before{content:"";position:absolute;top:7px;left:50%;margin-left:-20px;width:40px;height:4px;border-radius:3px;background:var(--s3)}
+.sh-h h3{flex:1;font-size:18px;font-weight:900;letter-spacing:-.02em}
+.sh-b{padding:4px 16px 18px;overflow-y:auto;font-size:14px;line-height:1.45}
+.q{margin:0 0 10px;padding:12px 14px;border-left:4px solid var(--yel);background:rgba(255,210,63,.08);border-radius:0 12px 12px 0;font-size:14px;line-height:1.45}
+.q cite{display:block;font-style:normal;font-size:12px;color:var(--mu);margin-top:6px}
+.q cite a{color:#cfe5ff}
+.vf{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:99px;background:rgba(55,227,164,.14);border:1px solid rgba(55,227,164,.4);color:#b5f5dc;font-size:12px;font-weight:800;margin-bottom:10px}
+.srch{display:flex;align-items:center;gap:8px;padding:0 14px;height:50px;border-radius:16px;background:var(--bg);border:2px solid var(--ln)}
+.srch:focus-within{border-color:var(--yel)}
+.srch input{flex:1;min-width:0;background:none;border:0;color:var(--tx);font:inherit;font-size:16px;outline:0;height:100%}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.sg{padding:7px 12px;border-radius:99px;background:var(--s2);border:1px solid var(--ln);font-size:13px;font-weight:700;min-height:36px}
+.rs h4{margin:12px 0 6px;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.rs button.ri{display:flex;width:100%;gap:10px;align-items:center;text-align:left;padding:11px 12px;border-radius:14px;background:var(--bg);border:1px solid var(--ln);margin-bottom:6px;font-weight:700;font-size:13.5px;line-height:1.3;min-height:48px}
+.rs button.ri small{display:block;color:var(--mu);font-weight:500;font-size:11.5px;margin-top:2px}
+.rs mark{background:rgba(255,210,63,.35);color:#fff;border-radius:3px}
+.mi{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.mi small{display:block;color:var(--mu);font-size:12px;margin-top:2px;line-height:1.35}
+.sw{width:50px;height:30px;border-radius:15px;background:var(--s3);position:relative;flex:none;transition:background .2s}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw[aria-checked=true]{background:var(--grn)}.sw[aria-checked=true]:after{transform:translateX(20px)}
+#shareprev{width:100%;border-radius:14px;display:block;margin-bottom:12px;max-height:300px;object-fit:contain;background:#000}
+/* toast */
+#toast{position:absolute;left:50%;bottom:calc(var(--tabh) + 16px);transform:translate(-50%,20px);background:#fff;color:#10131c;padding:10px 16px;border-radius:14px;font-weight:700;font-size:13.5px;z-index:40;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:340px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+/* cabină */
+#cab{position:absolute;inset:0;z-index:30;background:#05070b;display:flex;flex-direction:column;padding:16px;visibility:hidden;opacity:0;transition:opacity .25s}
+#cab.on{visibility:visible;opacity:1}
+#cab .ch{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--mu);font-weight:800;font-size:14px}
+#cab .cb{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;text-align:left;cursor:pointer;width:100%;padding:8px 2px}
+#cab .big{font-size:84px;font-weight:900;letter-spacing:-.05em;line-height:1;color:var(--yel);word-break:break-word}
+#cab .ti{font-size:34px;font-weight:900;line-height:1.1;letter-spacing:-.02em}
+#cab .su{font-size:23px;line-height:1.3;color:#d9deec;font-weight:600}
+#cab .msg{font-size:15px;line-height:1.4;padding:11px 13px;border-radius:12px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.4);color:#ffe9a0}
+#cab .cbt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#cab .cbt .btn{min-height:68px;font-size:20px;border-radius:18px}
+#cab .cbt .full{grid-column:1/-1}
+#cab.speaking .big{animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{text-shadow:0 0 28px rgba(255,210,63,.6)}}
+/* lista */
+#v-lista{overflow-y:auto;padding:6px 16px 20px}
+#v-lista h2{font-size:26px;font-weight:900;letter-spacing:-.03em}
+.coll{display:flex;align-items:center;gap:14px;margin:10px 0 4px;padding:12px 14px;border-radius:16px;background:var(--s1);border:1px solid var(--ln)}
+.coll .sg2{display:flex;gap:4px;margin-top:6px}.coll .sg2 i{width:20px;height:6px;border-radius:3px;background:var(--s3)}.coll .sg2 i.on{background:var(--grn)}
+.ls h3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+.li{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.li .ri{flex:1;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;background:var(--s1);border:1px solid var(--ln);text-align:left;font-weight:700;font-size:13.5px;line-height:1.3;min-height:52px}
+.li .ri .ic{color:var(--yel)}
+.li .x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--mu)}
+.em{padding:14px;border:1px dashed var(--ln);border-radius:14px;color:var(--mu);font-size:13px;line-height:1.4}
+.sit{display:flex;gap:6px;flex-wrap:wrap}
+.sit span{padding:5px 10px;border-radius:99px;background:var(--s2);font-size:12px;font-weight:700;border:1px solid var(--ln)}
+/* adevărat/fals feedback */
+#flux{user-select:none;-webkit-user-select:none}
+#af-fb{position:absolute;left:0;right:0;bottom:0;z-index:8;padding:16px 18px 18px;border-radius:26px 26px 0 0;background:var(--s1);border-top:3px solid var(--grn);transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.9,.3,1),visibility 0s .35s;visibility:hidden}
+#af-fb.on{transform:none;visibility:visible;transition-delay:0s}
+#af-fb.bad{border-top-color:var(--red)}
+#af-fb h3{font-size:22px;font-weight:900;display:flex;align-items:center;gap:8px}
+#af-fb p{font-size:14px;line-height:1.45;margin:6px 0 10px;color:#dfe5f4}
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+html.rm *,html.rm *:before,html.rm *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media (max-height:700px) and (max-width:520px){.sc .glyph{width:110px;height:110px;margin-top:10px}.sc .glyph .ic{width:52px;height:52px}.am-big{font-size:62px}}
+
+.coin .cv{opacity:0;font-style:normal}.stack .coin:last-child .cv{opacity:1}
+.am-col .stack.b .coin{width:98px}
+.cal-cd.wait{visibility:hidden}
+.dc-ctl{display:flex;gap:8px;margin-top:8px}.dc-ctl .cc{flex:1;justify-content:center}
+.srch input:focus-visible{outline:0;box-shadow:none}
+.rmb{padding:8px 0}.rmb+.rmb{border-top:1px solid rgba(255,255,255,.15)}
+
+@media (max-height:800px){
+ :root{--tabh:56px}
+ #top{height:48px}.tb{width:40px;height:40px}
+ #banner{padding:4px 9px;margin-bottom:4px;font-size:11px;line-height:1.25}
+ .fc{padding-top:34px}.fc-head{margin-bottom:4px}.fc h2{font-size:22px;margin:0 0 6px}
+ .sc .glyph{width:132px;height:132px;margin-top:16px}.sc .glyph .ic{width:60px;height:60px}.sc h2{font-size:28px}
+ .dk-head{padding-bottom:4px}.rb{width:56px;height:56px}.hint{padding-top:4px;font-size:12px}
+ .sb span.c{width:38px;height:38px}#side-bar{gap:4px}
+}
+@media (max-height:690px){
+ .fc-foot{display:none}
+ .sc .glyph{width:96px;height:96px;margin-top:6px}.sc .glyph .ic{width:44px;height:44px}.sc h2{font-size:25px}.sc .sub{font-size:13px}
+ .hint{display:none}
+}
+#flux{touch-action:pan-y}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+<symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><g transform="rotate(180 12 12)"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></g></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+<symbol id="i-undo" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></symbol>
+<symbol id="i-cdown" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+<symbol id="i-cup" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+<symbol id="i-home2" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M12 13v5M9.5 15.5h5"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2M16 7l3 3M14 9l2 2"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="i-brief" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+<symbol id="i-vol" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="i-cards" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6"/></symbol>
+<symbol id="i-car" viewBox="0 0 24 24"><path d="M3 17v-4l2-6h14l2 6v4z"/><path d="M3 13h18"/><circle cx="7.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/></symbol>
+<symbol id="i-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2.5"/><path d="M2.3 10.5c3.2.6 6.2.6 9.7 1.5 3.5-.9 6.5-.9 9.7-1.5M12 14.5V22"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8l-9-5-9 5v8l9 5z"/><polyline points="3.3 7 12 12 20.7 7"/><line x1="12" y1="22" x2="12" y2="12"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+<symbol id="i-ext" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+<symbol id="i-dl" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9a3.5 3 0 0 0-3-1.5c-2 0-3.2 1.2-3.2 2.5 0 3.5 6.4 1.5 6.4 5 0 1.4-1.4 2.5-3.2 2.5A3.8 3 0 0 1 9 16M7 11.5h6M7 13.5h6"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><polygon points="12 2 21 7 21 17 12 22 3 17 3 7"/><polygon points="12 8 16 10.3 16 14.7 12 17 8 14.7 8 10.3"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h7a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7"/></symbol>
+<symbol id="i-door" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="1"/><circle cx="15.5" cy="12.5" r=".8"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.6 22 9.4 17 14.3 18.2 21.3 12 18 5.8 21.3 7 14.3 2 9.4 8.9 8.6 12 2"/></symbol>
+<symbol id="i-hrt" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+</defs></svg>
+
+<div id="stage">
+ <aside id="side" aria-label="Despre prototip">
+  <h1>Swipe<br><span>Belgia</span></h1>
+  <p><b>Info Belgia ca Tinder + TikTok.</b> Trage cartonașele, derulează vertical, salvează ce îți trebuie.</p>
+  <ul>
+   <li><kbd>←</kbd> <kbd>→</kbd> trage cartonașul (Match și Adevărat/Fals)</li>
+   <li><kbd>↑</kbd> <kbd>↓</kbd> următorul / precedentul în Flux</li>
+   <li><kbd>F</kbd> favorit · <kbd>Esc</kbd> închide foaia</li>
+  </ul>
+  <p class="note">Prototip vizual. Singurul ghid cu cartonașe este garanția locativă, cu cifre luate din pagina pilot. Textele noi sunt <b>propuse</b>, neaprobate. Nu există cont, analitice sau cereri externe.</p>
+ </aside>
+ <div id="phone" role="application" aria-label="Swipe Belgia, prototip">
+  <header id="top">
+   <div id="logo"><i aria-hidden="true"><b></b><b></b><b></b></i>Swipe Belgia</div>
+   <button class="tb" id="b-search" aria-label="Caută"><svg class="ic"><use href="#i-search"/></svg></button>
+   <button class="tb" id="b-cab" aria-label="Mod în cabină, citire cu voce"><svg class="ic"><use href="#i-truck"/></svg></button>
+   <button class="tb" id="b-menu" aria-label="Setări și ștergere date"><svg class="ic"><use href="#i-sliders"/></svg></button>
+  </header>
+  <div id="banner" role="note">Prototip vizual. Cifre din pagina pilot, nu informație oficială nouă.</div>
+  <main id="main">
+   <div id="aurora" aria-hidden="true"></div>
+   <section class="view" id="v-match" aria-label="Match: situații"></section>
+   <section class="view" id="v-flux" hidden aria-label="Flux: garanția locativă">
+    <div id="prog" aria-hidden="true"></div>
+    <div id="flux" tabindex="-1"></div>
+    <div id="side-bar" role="toolbar" aria-label="Acțiuni pentru cartonașul curent">
+     <button class="sb hrt" id="a-fav" aria-pressed="false"><span class="c"><svg class="ic fa"><use href="#i-heart"/></svg></span>Favorit</button>
+     <button class="sb" id="a-later" aria-pressed="false"><span class="c"><svg class="ic fa"><use href="#i-bookmark"/></svg></span>Mai târziu</button>
+     <button class="sb up" id="a-up" aria-pressed="false"><span class="c"><svg class="ic fa"><use href="#i-up"/></svg></span>Util</button>
+     <button class="sb dn" id="a-dn" aria-pressed="false"><span class="c"><svg class="ic fa"><use href="#i-down"/></svg></span>Neclar</button>
+     <button class="sb" id="a-share"><span class="c"><svg class="ic"><use href="#i-share"/></svg></span>Trimite</button>
+     <button class="sb" id="a-src"><span class="c"><svg class="ic"><use href="#i-book"/></svg></span>Sursa</button>
+    </div>
+   </section>
+   <section class="view" id="v-af" hidden aria-label="Adevărat sau fals"></section>
+   <section class="view" id="v-lista" hidden aria-label="Lista mea"></section>
+   <div id="live" class="vh" aria-live="polite" aria-atomic="true"></div>
+  </main>
+  <nav id="tabs" role="tablist" aria-label="Secțiuni">
+   <button class="tab" role="tab" id="t-match" data-go="match" aria-selected="true"><svg class="ic"><use href="#i-cards"/></svg>Match</button>
+   <button class="tab" role="tab" id="t-flux" data-go="flux" aria-selected="false"><svg class="ic"><use href="#i-layers"/></svg>Flux</button>
+   <button class="tab" role="tab" id="t-af" data-go="af" aria-selected="false"><svg class="ic"><use href="#i-zap"/></svg>Adevărat?</button>
+   <button class="tab" role="tab" id="t-lista" data-go="lista" aria-selected="false"><svg class="ic"><use href="#i-bookmark"/></svg>Lista mea<span class="bd" id="bd"></span></button>
+  </nav>
+  <div id="scrim"></div>
+  <div class="sheet" id="sh-search" role="dialog" aria-modal="true" aria-labelledby="shs-t">
+   <div class="sh-h"><h3 id="shs-t">Caută</h3><button class="tb" data-close aria-label="Închide"><svg class="ic"><use href="#i-x"/></svg></button></div>
+   <div class="sh-b"><label class="srch"><svg class="ic"><use href="#i-search"/></svg><input id="q" type="search" placeholder="garanție, chirie, termen…" autocomplete="off" aria-label="Caută în cartonașe și ghiduri"></label>
+    <div class="chips" id="sugg"></div><div class="rs" id="rs" aria-live="polite"></div></div>
+  </div>
+  <div class="sheet" id="sh-src" role="dialog" aria-modal="true" aria-labelledby="shr-t">
+   <div class="sh-h"><h3 id="shr-t">Sursa</h3><button class="tb" data-close aria-label="Închide"><svg class="ic"><use href="#i-x"/></svg></button></div>
+   <div class="sh-b" id="src-b"></div>
+  </div>
+  <div class="sheet" id="sh-share" role="dialog" aria-modal="true" aria-labelledby="shh-t">
+   <div class="sh-h"><h3 id="shh-t">Trimite cartonașul</h3><button class="tb" data-close aria-label="Închide"><svg class="ic"><use href="#i-x"/></svg></button></div>
+   <div class="sh-b"><img id="shareprev" alt="Previzualizare cartonaș de trimis"><div class="row" style="margin-top:0">
+    <button class="btn pri" id="sh-send"><svg class="ic"><use href="#i-share"/></svg>Trimite</button>
+    <button class="btn" id="sh-dl"><svg class="ic"><use href="#i-dl"/></svg>Descarcă PNG</button>
+    <button class="btn" id="sh-cp"><svg class="ic"><use href="#i-copy"/></svg>Copiază textul</button></div>
+    <p style="font-size:12px;color:var(--mu);margin-top:12px;text-align:center">Imaginea se face pe telefonul tău. Nu se trimite nimic pe internet de aici.</p></div>
+  </div>
+  <div class="sheet" id="sh-menu" role="dialog" aria-modal="true" aria-labelledby="shm-t">
+   <div class="sh-h"><h3 id="shm-t">Setări</h3><button class="tb" data-close aria-label="Închide"><svg class="ic"><use href="#i-x"/></svg></button></div>
+   <div class="sh-b">
+    <div class="mi"><div><b>Sunet</b><small>Dezactivat implicit. Doar clicuri scurte la trage și la inimă.</small></div><button class="sw" id="sw-snd" role="switch" aria-checked="false" aria-label="Sunet"></button></div>
+    <div class="mi"><div><b>Mișcare redusă</b><small>Oprește animațiile; conținutul apare direct. Se aplică și automat dacă telefonul cere asta.</small></div><button class="sw" id="sw-rm" role="switch" aria-checked="false" aria-label="Mișcare redusă"></button></div>
+    <div class="mi"><div><b>Privat</b><small>Fără cont, fără analitice, fără cereri externe. Alegerile rămân doar în acest browser (localStorage).</small></div></div>
+    <div class="mi"><div><b>Despre texte</b><small>Cifrele, citatele și sursele vin din pagina pilot „Garanția locativă”, verificată la 30.07.2026. Textele de legătură sunt propuse și neaprobate.</small></div></div>
+    <div class="row"><button class="btn dng" id="b-wipe"><svg class="ic"><use href="#i-trash"/></svg><span>Șterge tot</span></button></div>
+   </div>
+  </div>
+  <div id="cab" role="dialog" aria-modal="true" aria-label="Mod în cabină">
+   <div class="ch"><span id="cab-n"></span><button class="tb" id="cab-x" aria-label="Închide modul în cabină"><svg class="ic"><use href="#i-x"/></svg></button></div>
+   <button class="cb" id="cab-b" aria-label="Atinge ca să oprești citirea"><div class="chip" id="cab-tag" style="align-self:flex-start"></div><div class="big" id="cab-big"></div><div class="ti" id="cab-ti"></div><div class="su" id="cab-su"></div></button>
+   <div class="msg" id="cab-msg" hidden></div>
+   <div class="cbt"><button class="btn pri full" id="cab-go"><svg class="ic"><use href="#i-vol"/></svg><span>Citește cu voce tare</span></button>
+    <button class="btn" id="cab-pv"><svg class="ic"><use href="#i-cup"/></svg>Înapoi</button><button class="btn" id="cab-nx"><svg class="ic"><use href="#i-cdown"/></svg>Următorul</button></div>
+  </div>
+  <div id="toast" role="status"></div>
+ </div>
+</div>
+<noscript><p style="position:fixed;inset:0;padding:24px;background:#090b11;color:#fff;font:16px system-ui">Swipe Belgia are nevoie de JavaScript. Prototip vizual, fără cereri externe.</p></noscript><script>
+'use strict';
+/* ===== utilitare ===== */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const ic=(n,c='')=>`<svg class="ic ${c}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const MONTHS=['ianuarie','februarie','martie','aprilie','mai','iunie','iulie','august','septembrie','octombrie','noiembrie','decembrie'];
+const dfmt=iso=>iso.split('-').reverse().join('.');
+function daysUntil(iso){const [y,m,d]=iso.split('-').map(Number),n=new Date();return Math.round((Date.UTC(y,m-1,d)-Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()))/864e5)}
+/* ===== stare + localStorage ===== */
+const KEY='swipe-belgia-v1';
+const defaults=()=>({m:{},mo:[],fav:{},later:{},vote:{},seen:{},done:{},af:{},sound:false,rm:false});
+let mem=null;
+function load(){try{const r=localStorage.getItem(KEY);return Object.assign(defaults(),r?JSON.parse(r):{})}catch(e){return mem||defaults()}}
+let S=load();
+function save(){mem=S;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const RM=()=>S.rm||matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.documentElement.classList.toggle('rm',S.rm);
+/* ===== DATE din pagina pilot (garanția locativă) — NU inventa nimic aici ===== */
+const VERIF='30.07.2026',REVERIF='2026-10-28';
+const PAGE='Pagina pilot „Garanția locativă: forme și ajutoare pe regiuni”';
+const SRC={
+ vl:{n:'Vlaanderen — huurwaarborg pentru locuințe private',u:'https://www.vlaanderen.be/bouwen-wonen-en-energie/huren-en-verhuren/huurprijs-en-huurwaarborg/huurwaarborg'},
+ vll:{n:'Vlaanderen — împrumutul pentru garanția locativă',u:'https://www.vlaanderen.be/huurwaarborglening-van-het-vlaams-woningfonds'},
+ bxl:{n:'Bruxelles Logement — garantie locative',u:'https://be.brussels/fr/logement/location/bail-dhabitation/garantie-locative'},
+ fdl:{n:'Fonds du Logement Bruxelles — ajutor pentru garanție',u:'https://fonds.brussels/fr/garantie-locative'},
+ wal:{n:'WALLEX — garanția locativă, articolul 62',u:'https://wallex.wallonie.be/eli/loi-decret/2018/03/15/2018201408/2024/07/01'},
+ swcs:{n:'SWCS — împrumutul pentru garanția locativă',u:'https://www.swcs.be/rapports-annuels/rapport-annuel-swcs-2024/la-garantie-locative'},
+ dg:{n:'Ostbelgien — garanția pentru o locuință închiriată',u:'https://ostbelgienlive.be/Desktopdefault.aspx/tabid-8222/13465_read-74078/'},
+ nbb:{n:'Banca Națională a Belgiei — instituții supravegheate',u:'https://www.nbb.be/en/financial-supervision-and-resolution/supervision-financial-institutions'}
+};
+const REG=[
+ {id:'vl',nume:'Flandra',scurt:'Flandra',luni:3,de:'2019-01-01',c:'#ffc531',src:'vl',quote:'Pentru contractele încheiate de la 1 ianuarie 2019, plafonul este trei luni.'},
+ {id:'bxl',nume:'Bruxelles',scurt:'Bruxelles',luni:2,de:'2024-11-01',c:'#ff6b87',src:'bxl',quote:'Pentru contractele încheiate sau reînnoite de la 1 noiembrie 2024, plafonul este două luni de chirie.'},
+ {id:'wal',nume:'Valonia',scurt:'Valonia',luni:2,de:'2023-06-01',c:'#62adff',src:'wal',quote:'Din 1 iunie 2023, garanția pentru reședința principală este limitată la două luni.'},
+ {id:'dg',nume:'Comunitatea germanofonă',scurt:'Germanofonă',luni:2,de:null,c:'#37e3a4',src:'dg',quote:'un plafon de maximum două luni de chirie'}
+];
+const RB=Object.fromEntries(REG.map(r=>[r.id,r]));
+const T={
+ warn:'Belgia nu are o singură formulă pentru garanția locativă; verifică regiunea și data contractului înainte să calculezi suma.',
+ trapOld:'Pentru contractele flamande anterioare lui 2019 și cele bruxelleze anterioare datei de 1 noiembrie 2024, verifică regimul vechi. Împrumuturile și ajutoarele regionale au criterii proprii și nu sunt acordate automat.',
+ trapAid:'Ajutorul ori împrumutul regional și contractul cu instituția care constituie garanția sunt decizii diferite; verifică separat costurile, datele, blocarea și eliberarea.',
+ aidCap:'Un ajutor sau împrumut regional nu aprobă automat contractul privat și nu schimbă plafonul legal.',
+ s1:'Mai întâi alege numai o formă permisă de regiune la data contractului.',
+ s2:'… cere în scris, înainte de transfer, costul total și dobânda, titularul contului, dovada pentru proprietar, durata, folosirea datelor și condițiile de refuz, eliberare și închidere.',
+ blocat:'… nu vira banii în contul său personal când legea cere cont blocat pe numele chiriașului.',
+ docKeep:'Păstrează plafonul regional, suma și forma, titularul contului, costurile, blocarea, dovada proprietarului, condițiile de eliberare și decizia separată pentru orice ajutor public.'
+};
+/* ===== ghidurile pilot (titluri reale din dist-lab/val1) ===== */
+const GH={
+ garantie:'Care este suma maximă a garanției în regiunea mea?',
+ locuire:'Ce traseu regional de sprijin pentru locuire verific?',
+ adresa:'M-am mutat. Cum declar noua adresă?',
+ alocatii:'Ce sistem de alocații pentru copii mi se aplică în Belgia?',
+ salariu:'Salariul, programul sau documentele sunt greșite. Unde cer ajutor?',
+ ocupare:'La ce serviciu public mă înscriu dacă îmi caut un loc de muncă?',
+ permis:'Pot conduce sau schimba permisul străin în Belgia?',
+ comuna:'Cum depun dosarul UE și ce dovedește Annex 19?',
+ apostila:'Când nu este necesară apostila și când poate fi cerută traducerea?',
+ bpost:'Cum trimit, primesc sau reclam o scrisoare ori un colet prin bpost?',
+ plangere:'Am o problemă cu un serviciu public federal. Unde depun plângerea?'
+};
+const SIT=[
+ {id:'s1',t:'Închiriez o locuință',k:'Chirie',sub:'Contract de chirie, garanție, mutare.',ic:'key',h:200,g:['garantie','locuire','adresa']},
+ {id:'s2',t:'Am copii',k:'Copii',sub:'Alocații și sprijin pentru familie.',ic:'users',h:330,g:['alocatii']},
+ {id:'s3',t:'Lucrez în Belgia',k:'Muncă',sub:'Salariu, program, documente de muncă.',ic:'brief',h:25,g:['salariu','ocupare']},
+ {id:'s4',t:'Mașină cu număr românesc',k:'Mașină',sub:'Acte și reguli pentru mașină.',ic:'car',h:280,g:[]},
+ {id:'s5',t:'Vreau să cumpăr casă',k:'Casă',sub:'Acte și pași la cumpărare.',ic:'home2',h:150,g:[]},
+ {id:'s6',t:'Sunt șofer profesionist',k:'Șofer',sub:'Permis, acte și drum.',ic:'wheel',h:45,g:['permis']},
+ {id:'s7',t:'Am un contract de muncă',k:'Contract',sub:'Ce scrie în contract, ce urmează.',ic:'doc',h:190,g:['salariu']},
+ {id:'s8',t:'Stau în Flandra',k:'Flandra',sub:'Regulile diferă de la o regiune la alta.',ic:'pin',h:55,g:['garantie','adresa']},
+ {id:'s9',t:'M-am mutat de curând',k:'Mutat',sub:'Adresă, comună, acte.',ic:'box',h:262,g:['adresa','comuna']},
+ {id:'s10',t:'Am acte din România',k:'Acte RO',sub:'Traduceri, apostilă, acte oficiale.',ic:'globe',h:10,g:['apostila']}
+];
+const MYTHS=[
+ {id:'m1',q:'Garanția locativă are aceeași formulă în toată Belgia.',a:false,why:T.warn,quotes:[{t:T.warn,page:'Avertisment din fișierul de reguli al paginii pilot',ss:['vl','bxl','wal','dg']}]},
+ {id:'m2',q:'În Flandra, pentru contractele de la 1 ianuarie 2019, plafonul este trei luni de chirie.',a:true,why:REG[0].quote,quotes:[{t:REG[0].quote,s:'vl'}]},
+ {id:'m3',q:'În Bruxelles plafonul este tot trei luni de chirie.',a:false,why:REG[1].quote,quotes:[{t:REG[1].quote,s:'bxl'}]},
+ {id:'m4',q:'Garanția poate fi de 6 luni de chirie.',a:false,why:'În pagina pilot, pentru reședința principală privată, plafonul este de 2–3 luni de chirie, după regiune: Flandra 3; Bruxelles, Valonia și Comunitatea germanofonă 2.',quotes:REG.map(r=>({t:r.quote,s:r.src,r:r.nume}))},
+ {id:'m5',q:'Un ajutor sau împrumut regional schimbă plafonul legal.',a:false,why:T.aidCap,quotes:[{t:T.aidCap,page:PAGE+', „Răspunsul complet”'}]},
+ {id:'m6',q:'Dacă legea cere cont blocat pe numele chiriașului, poți vira banii în contul personal al proprietarului.',a:false,why:T.blocat,quotes:[{t:T.blocat,page:PAGE+', pasul „Cere forma și suma în scris”'}]}
+];
+const MYTH_TXT='Mituri: ';
+/* ===== TIPARE DE MIȘCARE: fiecare e o funcție (mount, date) -> {play,reset} ===== */
+function tween(node,from,to,ms,render){
+ cancelAnimationFrame(node._raf);
+ if(RM()||ms<=0){render(to);return}
+ const t0=performance.now();
+ const st=t=>{const k=clamp((t-t0)/ms,0,1),e=1-Math.pow(1-k,3);render(from+(to-from)*e);if(k<1)node._raf=requestAnimationFrame(st)};
+ node._raf=requestAnimationFrame(st);
+}
+function replay(m){m.classList.remove('go');void m.offsetWidth;if(!RM())m.classList.add('go')}
+const PAT={};
+/* 1. SUMĂ: număr care urcă + stive de monede (o monedă = o lună de chirie) */
+PAT.amount=(m,o)=>{
+ let rent=o.rent,cur=0;
+ const [a,b]=o.rows; // a: regiune cu plafon mare; b: celelalte
+ const col=(r,cls)=>`<div class="am-col"><div class="bx2"><div class="stack ${cls}">${Array.from({length:r.luni},(_,k)=>`<span class="coin" style="--k:${k}"><i class="cv"></i></span>`).join('')}</div></div><div class="lb"><b class="cf">0 €</b>${esc(r.lab)} · ${r.luni} luni</div></div>`;
+ m.innerHTML=`<div class="pt"><div class="pt-sub">${esc(o.sub)}</div>
+  <div class="am-big" aria-live="off"><span class="av">0</span><small>€</small></div><div class="am-lab">${esc(a.lab)} · ${a.luni} luni de chirie</div>
+  <div class="am-stage">${col(a,'')}${col(b,'b')}</div>
+  <div class="am-rng"><label>Chiria lunară <span class="ex">Exemplu</span><b class="rv"></b></label>
+  <input type="range" min="${o.min}" max="${o.max}" step="${o.step}" value="${rent}" aria-label="Chiria lunară, exemplu"></div></div>`;
+ const av=$('.av',m),rv=$('.rv',m),inp=$('input',m),cf=$$('.cf',m),cvs=$$('.coin',m);
+ const lab=[a,b];
+ const paint=v=>{av.textContent=fmt(v)};
+ const sync=()=>{rv.textContent=fmt(rent)+' € / lună';cf[0].textContent=fmt(rent*a.luni)+' €';cf[1].textContent=fmt(rent*b.luni)+' €';cvs.forEach(c=>$('.cv',c).textContent=String(rent));inp.setAttribute('aria-valuetext',rent+' euro pe lună; garanție maximă '+fmt(rent*a.luni)+' euro')};
+ sync();paint(rent*a.luni);cur=rent*a.luni;
+ inp.addEventListener('input',()=>{rent=+inp.value;sync();const to=rent*a.luni;tween(av,cur,to,350,v=>{cur=v;paint(v)});cur=to});
+ return{play(){replay(m);paint(0);cur=rent*a.luni;tween(av,0,cur,1500,paint)},reset(){cancelAnimationFrame(av._raf);m.classList.remove('go');paint(rent*a.luni)}};
+};
+/* 2. COMPARAȚIE PE REGIUNI: plăci hexagonale abstracte + bare */
+PAT.regions=(m,o)=>{
+ const R=24,w=Math.sqrt(3)*R,rows=o.rows,x0=(300-5*w-w/2)/2+w/2;let sel=o.sel,n=0,cells='';
+ rows.forEach((row,ri)=>[...row].forEach((ch,ci)=>{if(ch==='.')return;const id={F:'vl',B:'bxl',W:'wal',D:'dg'}[ch],r=RB[id];
+  const cx=x0+w/2+ci*w+(ri%2?w/2:0),cy=6+R+ri*1.5*R;
+  const pts=[0,1,2,3,4,5].map(k=>{const an=Math.PI/180*(60*k-30);return(cx+R*Math.cos(an)).toFixed(1)+','+(cy+R*Math.sin(an)).toFixed(1)}).join(' ');
+  cells+=`<polygon class="hx" data-r="${id}" style="--c:${r.c};--i:${n++}" points="${pts}"/>`}));
+ m.innerHTML=`<div class="pt"><div class="pt-sub">${esc(o.sub)}</div>
+  <svg class="rg-svg" viewBox="0 0 300 168" role="img" aria-label="Hartă stilizată, nu geografică: Flandra, Bruxelles, Valonia, Comunitatea germanofonă">${cells}</svg>
+  <div class="rg-bars" role="group" aria-label="Alege regiunea locuinței">${REG.map((r,i)=>`<button class="rgb" data-r="${r.id}" style="--c:${r.c};--w:${r.luni/3*100}%;--i:${i}" aria-pressed="false"><span>${esc(r.scurt)}</span><span class="tr"><span class="fl"></span></span><em>${r.luni} luni</em></button>`).join('')}</div>
+  <div class="rg-det" aria-live="polite"></div></div>`;
+ const det=$('.rg-det',m);
+ const pick=id=>{sel=id;$$('.hx',m).forEach(h=>h.classList.toggle('on',h.dataset.r===id));$$('.rgb',m).forEach(b=>{const on=b.dataset.r===id;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  const r=RB[id];det.innerHTML=`<b style="color:${r.c}">${esc(r.nume)}</b>: ${r.luni} luni de chirie, maximum.<br>${r.de?'Se aplică de la '+dfmt(r.de)+'.':'Fără dată indicată.'}<br><span class="ex">Exemplu</span> La ${o.rent} € pe lună: <b>${fmt(o.rent*r.luni)} €</b>`;};
+ m.addEventListener('click',e=>{const t=e.target.closest('[data-r]');if(t)pick(t.dataset.r)});
+ pick(sel);
+ return{play(){replay(m)},reset(){m.classList.remove('go')}};
+};
+/* 3. TERMEN / DATĂ: calendar care se întoarce + „mai ai N zile” */
+PAT.calendar=(m,o)=>{
+ let idx=o.items.length-1,timers=[];
+ m.innerHTML=`<div class="pt"><div class="pt-sub">${esc(o.sub)}</div>
+  <div class="cal-w"><div class="cal" role="img"><div class="bar"></div><div class="dy"></div><div class="yr"></div><div class="rn"></div></div></div>
+  <div class="cal-chips" role="group" aria-label="Alege data">${o.items.map((it,i)=>`<button class="cc" data-i="${i}" aria-pressed="false">${esc(it.chip)}</button>`).join('')}</div>
+  <div class="cal-cd" aria-live="polite"><b></b><span></span></div></div>`;
+ const cal=$('.cal',m),cdb=$('.cal-cd b',m),cds=$('.cal-cd span',m);
+ const fill=i=>{const it=o.items[i],[y,mo,d]=it.iso.split('-').map(Number);$('.bar',cal).textContent=MONTHS[mo-1];$('.dy',cal).textContent=d;$('.yr',cal).textContent=y;$('.rn',cal).textContent=it.cap;cal.setAttribute('aria-label',it.cap+': '+d+' '+MONTHS[mo-1]+' '+y);
+  $$('.cc',m).forEach((b,k)=>b.setAttribute('aria-pressed',k===i))};
+ const flip=i=>{idx=i;if(RM()){fill(i);return}cal.classList.add('fo');setTimeout(()=>{fill(i);cal.classList.remove('fo');cal.classList.add('fi');void cal.offsetWidth;cal.classList.remove('fi')},230)};
+ const cd=(animate)=>{const n=daysUntil(o.deadline.iso);cds.textContent=o.deadline.note;$('.cal-cd',m).classList.remove('wait');
+  if(n>0){const set=v=>{cdb.textContent='Mai ai '+Math.round(v)+(Math.round(v)===1?' zi':' zile')};animate?tween(cdb,0,n,900,set):set(n);cdb.dataset.n=n}
+  else if(n===0)cdb.textContent='Termenul e azi';else cdb.textContent='Termenul a trecut acum '+(-n)+(n===-1?' zi':' zile')};
+ $('.cal-chips',m).addEventListener('click',e=>{const b=e.target.closest('.cc');if(!b)return;timers.forEach(clearTimeout);flip(+b.dataset.i)});
+ fill(idx);cd(false);
+ return{play(){timers.forEach(clearTimeout);timers=[];replay(m);if(RM()){fill(o.items.length-1);cd(false);return}
+   $('.cal-cd',m).classList.add('wait');fill(0);idx=0;o.items.forEach((_,i)=>{if(i>0)timers.push(setTimeout(()=>flip(i),i*1500))});timers.push(setTimeout(()=>cd(true),(o.items.length-1)*1500+400))},
+  reset(){timers.forEach(clearTimeout);timers=[];fill(o.items.length-1);cd(false)}};
+};
+/* 4. DA/NU (ramificare): două uși care se deschid */
+PAT.branch=(m,o)=>{
+ let sel=0,pick=null;
+ const outs=(r,which)=>which==='y'?{cls:'ok',h:`Da — ${r.nume}: plafonul este ${r.luni} luni de chirie`,p:`${esc(r.quote)}<br>Se aplică de la ${dfmt(r.de)}.`}:{cls:'warn',h:'Nu — verifică regimul vechi',p:`${esc(o.old)}<br><i>Prototipul nu are cifre pentru regimul vechi.</i>`};
+ const q=r=>r.id==='bxl'?`Contractul e încheiat (Bruxelles: încheiat sau reînnoit) la sau după ${dfmt(r.de)}?`:`Contractul e încheiat la sau după ${dfmt(r.de)}?`;
+ const html=()=>{const r=o.regs[sel];
+  const both=RM();
+  return `<div class="pt"><div class="pt-sub">${esc(o.sub)}</div><div class="br-seg" role="group" aria-label="Alege regiunea">${o.regs.map((x,i)=>`<button class="cc" data-s="${i}" aria-pressed="${i===sel}">${esc(x.nume)}</button>`).join('')}</div>
+  <div class="br-q" id="brq">${q(r)}</div>
+  ${both?'':`<div class="doors" role="group" aria-labelledby="brq"><button class="dr dy" data-d="y" aria-label="Da"><span class="in">${ic('check')}</span><span class="pn">Da<small>Atinge să deschizi</small></span></button><button class="dr dn" data-d="n" aria-label="Nu"><span class="in">${ic('warn')}</span><span class="pn">Nu<small>Atinge să deschizi</small></span></button></div>`}
+  <div class="br-out" aria-live="polite">${both?['y','n'].map(w=>{const x=outs(r,w);return `<div class="rmb"><b>${x.h}</b>${x.p}</div>`}).join(''):'Atinge o ușă ca să vezi ce se aplică.'}</div></div>`};
+ const render=()=>{m.innerHTML=html();pick=null;
+  $$('.cc',m).forEach(b=>b.onclick=()=>{sel=+b.dataset.s;render();replay(m)});
+  $$('.dr',m).forEach(d=>d.onclick=()=>choose(d.dataset.d))};
+ const choose=w=>{const r=o.regs[sel],x=outs(r,w),out=$('.br-out',m);
+  $$('.dr',m).forEach(d=>{const on=d.dataset.d===w;d.classList.toggle('open',on);d.classList.toggle('dim',!on)});
+  out.className='br-out '+x.cls;out.innerHTML=`<b>${x.h}</b>${x.p}`;pick=w};
+ render();
+ return{play(){render();replay(m);if(!RM()){const d=$('.dr.dy',m);d&&d.animate&&d.animate([{transform:'rotateY(0)'},{transform:'rotateY(-5deg)'},{transform:'rotateY(0)'}],{duration:600,delay:500})}},reset(){render()}};
+};
+/* 5. PAȘI: linie care se desenează între noduri, nodurile se aprind pe rând */
+PAT.steps=(m,o)=>{
+ const n=o.nodes.length,H=244,gap=(H-60)/(n-1),ys=o.nodes.map((_,i)=>30+i*gap);
+ let d='';
+ for(let i=0;i<n-1;i++){const xa=i%2?277:23,xb=i%2?23:277;const y1=ys[i],y2=ys[i+1];
+  d+=`<path class="st-p${o.nodes[i+1].x?' dsh':''}" pathLength="1" style="--d:${(i*.8+.1).toFixed(2)}s" d="M${xa} ${y1} C${xa} ${y1+gap*.55} ${xb} ${y2-gap*.55} ${xb} ${y2}"/>`}
+ m.innerHTML=`<div class="pt"><div class="pt-sub">${esc(o.sub)}</div><div class="st-w" style="margin-top:8px"><svg viewBox="0 0 300 ${H}" preserveAspectRatio="none" aria-hidden="true">${d}</svg>
+  ${o.nodes.map((s,i)=>`<button class="nd2 ${i%2?'r':''} ${s.x?'x':''}" data-i="${i}" aria-pressed="false" style="top:${ys[i]}px;${i%2?'right':'left'}:0;--d:${i?(i*.8).toFixed(2):'.1'}s"><span class="no">${i+1}</span><span class="tt">${esc(s.t)}</span></button>`).join('')}</div>
+  <div class="st-det" aria-live="polite"></div></div>`;
+ const det=$('.st-det',m);
+ const pick=i=>{$$('.nd2',m).forEach((b,k)=>b.setAttribute('aria-pressed',k===i));const s=o.nodes[i];det.innerHTML=`<b>${esc(s.full||s.t)}</b>${s.x?'<br><i>Ghid separat din pagina pilot („Continuă cu”)</i>':''}<br>${s.d.map(esc).join('<br>')}`};
+ m.addEventListener('click',e=>{const b=e.target.closest('.nd2');if(b)pick(+b.dataset.i)});
+ pick(0);
+ return{play(){replay(m)},reset(){m.classList.remove('go')}};
+};
+/* 6. CAPCANĂ: bandă de avertizare care alunecă + un singur tremur */
+PAT.trap=(m,o)=>{
+ let i=0;
+ const render=()=>{const t=o.items[i];m.innerHTML=`<div class="pt"><div class="pt-sub">${esc(o.sub)}</div><div class="tp-t" role="group" aria-label="Alege capcana">${o.items.map((x,k)=>`<button class="cc" data-k="${k}" aria-pressed="${k===i}">${esc(x.chip)}</button>`).join('')}</div>
+  <div class="tp-w"><div class="hz t"></div><div class="tp-c shk" role="alert">${ic('warn')}<h3>${esc(t.t)}</h3><p>${esc(t.p)}</p></div><div class="hz bt"></div></div></div>`;
+  $$('.cc',m).forEach(b=>b.onclick=()=>{i=+b.dataset.k;render();replay(m)})};
+ render();
+ return{play(){render();replay(m)},reset(){m.classList.remove('go')}};
+};
+/* 7. ACTE: pachet de cărți care se desface în evantai */
+PAT.docs=(m,o)=>{
+ const n=o.docs.length,step=9;let sel=0;
+ m.innerHTML=`<div class="pt"><div class="pt-sub">${esc(o.sub)}</div><div class="dc-fan">${o.docs.map((d,i)=>`<button class="dcard" data-i="${i}" style="--a:${((i-(n-1)/2)*step).toFixed(1)};--i:${i};--k:${[200,40,330,150,270][i%5]}" aria-pressed="false"><span class="w">${esc(d.w)}</span><span class="t">${esc(d.t)}</span></button>`).join('')}</div><div class="dc-det" aria-live="polite"></div><div class="dc-ctl"><button class="cc dc-pv" aria-label="Cartea anterioară">Înapoi</button><button class="cc dc-nx" aria-label="Cartea următoare">Următoarea</button></div></div>`;
+ const det=$('.dc-det',m);
+ const pick=i=>{sel=i;$$('.dcard',m).forEach((c,k)=>{c.classList.toggle('sel',k===i);c.setAttribute('aria-pressed',k===i);c.style.zIndex=k===i?30:k});const d=o.docs[i];det.innerHTML=`<b>${esc(d.w)}: ${esc(d.t)}</b>${esc(d.d)}`};
+ m.addEventListener('click',e=>{const c=e.target.closest('.dcard');if(c)pick(+c.dataset.i)});
+ $('.dc-pv',m).onclick=()=>pick((sel+n-1)%n);$('.dc-nx',m).onclick=()=>pick((sel+1)%n);
+ pick(0);
+ return{play(){replay(m)},reset(){m.classList.remove('go')}};
+};
+/* 8. „CE FACI ACUM”: inel de progres + bife + linkuri oficiale */
+function ringHTML(frac,label,size){const r=30,c=2*Math.PI*r;return `<div class="ring" style="width:${size||72}px;height:${size||72}px"><svg viewBox="0 0 72 72" style="width:100%;height:100%"><circle class="bg" cx="36" cy="36" r="${r}"/><circle class="fg" cx="36" cy="36" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-frac)).toFixed(1)}"/></svg><b>${label}</b></div>`}
+PAT.now=(m,o)=>{
+ const L=(k,t)=>`<a href="${SRC[k].u}" target="_blank" rel="noopener noreferrer">${ic('ext')}<span>${esc(t)}</span></a>`;
+ m.innerHTML=`<div class="pt"><div class="ring-w"><div class="rw"></div><div class="pt-sub">${esc(o.sub)}</div></div>
+  <div class="ck">${o.items.map(it=>`<button data-k="${it.id}" aria-pressed="false"><span class="bx">${ic('check')}</span><span>${esc(it.t)}</span></button>`).join('')}</div>
+  <div class="lk"><h4>Reguli oficiale (alege regiunea)</h4>${L('vl','Flandra')}${L('bxl','Bruxelles')}${L('wal','Valonia')}${L('dg','Comunitatea germanofonă')}
+  <h4>Dacă nu poți constitui suma</h4>${L('vll','Flandra: împrumut')}${L('fdl','Bruxelles: ajutor')}${L('swcs','Valonia: împrumut')}${L('nbb','Registrul NBB')}</div></div>`;
+ const paint=()=>{const k=o.items.filter(i=>S.done[i.id]).length;$('.rw',m).innerHTML=ringHTML(k/o.items.length,k+'/'+o.items.length);
+  $$('.ck button',m).forEach(b=>b.setAttribute('aria-pressed',!!S.done[b.dataset.k]))};
+ m.addEventListener('click',e=>{const b=e.target.closest('.ck button');if(!b)return;const k=b.dataset.k;S.done[k]=!S.done[k];if(!S.done[k])delete S.done[k];save();paint();blip(S.done[k]?660:380);
+  if(o.items.every(i=>S.done[i.id]))toast('Bravo, ai bifat tot. Inelul s-a umplut.')});
+ paint();
+ return{play(){replay(m);paint()},reset(){m.classList.remove('go')},paint};
+};
+/* ===== cartonașele fluxului (garanția locativă) — date + tipar ===== */
+const Q=(r)=>({t:r.quote,s:r.src,r:r.nume});
+const CARDS=[
+ {id:'c1',tag:'Sumă',ic:'coin',h:48,title:'Cât poate fi garanția maximă?',pat:'amount',
+  data:{sub:'Plafonul este în luni de chirie. Mută cursorul și vezi suma.',rent:800,min:300,max:2000,step:50,rows:[{lab:'Flandra',luni:3},{lab:'Bruxelles, Valonia, germanofonă',luni:2}]},
+  foot:'<span class="ex">Exemplu</span> calcul ilustrativ: plafon × chirie. Dublu-tap = ♥',
+  big:'2.400 €',line:'Flandra, la o chirie de 800 € (exemplu). În celelalte regiuni: 1.600 €.',
+  speak:'Garanția locativă. La o chirie de opt sute de euro, plafonul maxim este două mii patru sute de euro în Flandra, adică trei luni de chirie, și o mie șase sute de euro în celelalte regiuni, adică două luni de chirie. Este doar un exemplu.',
+  kw:'garantie chirie suma plafon euro 800 2400 1600 luni exemplu bani',
+  quotes:[Q(REG[0]),Q(REG[1]),Q(REG[2]),Q(REG[3])],note:'Exemplul de calcul (chirie 800 € → 2.400 € în Flandra, 1.600 € în celelalte regiuni) este plafon × chirie, marcat „Exemplu”, nu o ofertă.'},
+ {id:'c2',tag:'Regiuni',ic:'map',h:205,title:'Nu există o singură formulă în Belgia',pat:'regions',
+  data:{sub:'Harta e abstractă, nu geografică. Alege regiunea locuinței.',rows:['FFFF.','FFBF.','WWWWD','.WWDD'],sel:'vl',rent:800},
+  foot:'Pagina pilot: „Alege regiunea locuinței”. Nu salvăm datele tale.',
+  big:'2–3 luni',line:'Flandra 3, Bruxelles 2, Valonia 2, Comunitatea germanofonă 2 luni de chirie.',
+  speak:'Belgia nu are o singură formulă pentru garanția locativă. În Flandra plafonul este trei luni de chirie. În Bruxelles, în Valonia și în Comunitatea germanofonă este de două luni de chirie.',
+  kw:'regiune flandra bruxelles valonia germanofona harta plafon vlaanderen',
+  quotes:[{t:T.warn,page:'Avertisment din fișierul de reguli al paginii pilot',ss:['vl','bxl','wal','dg']},...REG.map(Q)]},
+ {id:'c3',tag:'Termen',ic:'cal',h:345,title:'Data contractului contează',pat:'calendar',
+  data:{sub:'De când se aplică plafonul în fiecare regiune. Verifică data înainte să calculezi.',
+   items:[{iso:'2019-01-01',chip:'Flandra',cap:'Flandra, se aplică de la'},{iso:'2023-06-01',chip:'Valonia',cap:'Valonia, se aplică de la'},{iso:'2024-11-01',chip:'Bruxelles',cap:'Bruxelles, se aplică de la'},{iso:REVERIF,chip:'Reverificare',cap:'Reverificarea cifrelor din pilot'}],
+   deadline:{iso:REVERIF,note:'până la reverificarea cifrelor din pilot ('+dfmt(REVERIF)+'). Ilustrativ, calculat din data de azi; nu e un termen al tău.'}},
+  foot:'Comunitatea germanofonă: fără dată indicată.',
+  big:'2019 · 2023 · 2024',line:'Flandra de la 01.01.2019, Valonia de la 01.06.2023, Bruxelles de la 01.11.2024.',
+  speak:'Data contractului contează. În Flandra plafonul se aplică de la întâi ianuarie două mii nouăsprezece. În Valonia, de la întâi iunie două mii douăzeci și trei. În Bruxelles, de la întâi noiembrie două mii douăzeci și patru. Verifică regiunea și data contractului înainte să calculezi suma.',
+  kw:'termen data calendar zile contract 2019 2023 2024 reverificare',
+  quotes:[Q(REG[0]),Q(REG[2]),Q(REG[1]),{t:'Reverificare până la '+dfmt(REVERIF),page:PAGE+', banda de încredere: „8 surse (7 oficiale) · reverificare până la 28.10.2026”'}],note:'Comunitatea germanofonă: pagina pilot nu indică o dată („Fără dată indicată”). „Mai ai N zile” se calculează din data de azi și privește doar reverificarea cifrelor, nu un termen legal al tău.'},
+ {id:'c4',tag:'Da / Nu',ic:'door',h:150,title:'Contractul tău e destul de nou?',pat:'branch',
+  data:{sub:'Alege regiunea, apoi o ușă.',regs:[REG[0],REG[1]],old:'Pentru contractele flamande anterioare lui 2019 și cele bruxelleze anterioare datei de 1 noiembrie 2024, verifică regimul vechi.'},
+  foot:'Întrebările sunt din pagina pilot („Află în 30 de secunde”).',
+  big:'Da / Nu',line:'Contractul e încheiat la sau după data de început a regulii actuale?',
+  speak:'Contractul este încheiat la sau după data de început a regulii actuale? Dacă da, se aplică plafonul regiunii. Dacă nu, verifică regimul vechi.',
+  kw:'da nu contract ramificare usa 2019 regim vechi mai vechi',
+  quotes:[Q(REG[0]),Q(REG[1]),{t:'Pentru contractele flamande anterioare lui 2019 și cele bruxelleze anterioare datei de 1 noiembrie 2024, verifică regimul vechi.',page:PAGE+', „Capcane”'}]},
+ {id:'c5',tag:'Pași',ic:'route',h:265,title:'Ce faci, în ordine',pat:'steps',
+  data:{sub:'Atinge un nod ca să citești fraza din pagina pilot.',nodes:[
+   {t:'Alege forma permisă în regiunea ta',d:[T.s1,'Flandra — alege una dintre formele permise','Bruxelles — verifică cele cinci forme și ajutorul regional','Valonia — alege una dintre cele trei forme și verifică SWCS','Comunitatea germanofonă — maximum două luni într-un cont blocat']},
+   {t:'Cere forma și suma în scris',d:[T.s2]},
+   {t:'e-DEPO pentru garanția locativă',full:'Cum funcționează e-DEPO pentru garanția locativă?',x:1,d:['Pentru garanția unei locuințe private folosite ca reședință principală, e-DEPO este serviciul federal disponibil în toată Belgia.']},
+   {t:'Recuperarea garanției',full:'Cum recuperez garanția locativă și ce fac dacă nu există acord?',x:1,d:['Pentru o locuință privată folosită ca reședință principală, compară ieșirea cu inventarul și separă sumele acceptate de cele contestate.']}]},
+  foot:'Nodurile punctate sunt ghiduri separate din „Continuă cu”.',
+  big:'2 pași',line:'Alege forma permisă în regiunea ta. Cere forma și suma în scris.',
+  speak:'Ce faci, în ordine. Unu: alege forma permisă în regiunea ta. Doi: cere forma și suma în scris, înainte de transfer.',
+  kw:'pasi ordine forma scris cont blocat edepo e-depo recuperez',
+  quotes:[{t:T.s1,page:PAGE+', „Ce faci, în ordine”, pasul 1'},{t:T.s2,page:PAGE+', pasul „Cere forma și suma în scris”'}]},
+ {id:'c6',tag:'Capcană',ic:'warn',h:32,title:'Atenție la capcane',pat:'trap',
+  data:{sub:'Două capcane din pagina pilot.',items:[{chip:'1 · Ajutor ≠ contract',t:'Ajutorul nu e contractul',p:T.trapAid},{chip:'2 · Contracte vechi',t:'Contractele mai vechi',p:T.trapOld}]},
+  foot:'Textele sunt cele din „Capcane” de pe pagina pilot.',
+  big:'Atenție',line:'Ajutorul regional și contractul cu instituția sunt decizii diferite.',
+  speak:'Atenție, capcană. Ajutorul sau împrumutul regional și contractul cu instituția care constituie garanția sunt decizii diferite. Verifică separat costurile, datele, blocarea și eliberarea.',
+  kw:'capcana capcane atentie ajutor imprumut contract mai vechi regim vechi',
+  quotes:[{t:T.trapAid,page:PAGE+', „Capcane”'},{t:T.trapOld,page:PAGE+', „Capcane”'}]},
+ {id:'c7',tag:'Acte',ic:'doc',h:185,title:'Ce acte păstrezi',pat:'docs',
+  data:{sub:'Atinge o carte ca să o citești.',docs:[
+   {w:'Înainte',t:'Contractul de închiriere cu data semnării sau reînnoirii',d:'Data stabilește regimul aplicabil și trebuie verificată pentru fiecare jurisdicție, inclusiv Comunitatea germanofonă.'},
+   {w:'După',t:'Dovada formei și sumei garanției',d:T.docKeep},
+   {w:'Păstrează',t:'Titularul contului, costurile, blocarea',d:T.docKeep},
+   {w:'Păstrează',t:'Dovada proprietarului, condițiile de eliberare',d:T.docKeep},
+   {w:'Păstrează',t:'Decizia separată pentru orice ajutor public',d:T.docKeep}]},
+  foot:'Cărțile 3–5 sunt fragmentele frazei „Păstrează…” din pagina pilot.',
+  big:'Acte',line:'Contractul cu data semnării sau reînnoirii; dovada formei și sumei garanției.',
+  speak:'Acte. Înainte: contractul de închiriere, cu data semnării sau reînnoirii. După: dovada formei și sumei garanției.',
+  kw:'acte documente dovada contract pastrezi',
+  quotes:[{t:'Contractul de închiriere cu data semnării sau reînnoirii. Data stabilește regimul aplicabil și trebuie verificată pentru fiecare jurisdicție, inclusiv Comunitatea germanofonă.',page:PAGE+', „Acte”, Înainte'},{t:'Dovada formei și sumei garanției. '+T.docKeep,page:PAGE+', „Acte”, După'}]},
+ {id:'c8',tag:'Ce faci acum',ic:'check',h:130,title:'Ce faci acum',pat:'now',
+  data:{sub:'Bifează „Am făcut” și umple inelul. Text propus, neaprobat.',items:[
+   {id:'d1',t:'Am verificat regiunea locuinței și data contractului'},{id:'d2',t:'Am ales o formă permisă în regiunea mea'},{id:'d3',t:'Am cerut forma și suma în scris, înainte de transfer'}]},
+  foot:'Linkurile duc la sursele oficiale. Se deschid doar când le atingi.',
+  big:'3 de bifat',line:'Verifică regiunea și data, alege forma permisă, cere totul în scris.',
+  speak:'Ce faci acum. Verifică regiunea locuinței și data contractului, alege o formă permisă și cere totul în scris, înainte de transfer. Linkurile oficiale sunt pe ecran.',
+  kw:'ce faci acum link oficial surse bifa am facut inel progres',
+  quotes:[{t:T.warn,page:'Avertisment din fișierul de reguli al paginii pilot',ss:['vl','bxl','wal','dg']},...Object.keys(SRC).map(k=>({t:SRC[k].n,s:k,srcOnly:1}))],note:'Cele trei bife sunt text propus, derivat din avertisment și din cei doi pași; nu sunt aprobate.'}
+];
+const N=CARDS.length;
+/* ===== sunet (dezactivat implicit) ===== */
+let AC=null;
+function blip(f=520,d=.07){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d+.02)}catch(e){}}
+/* ===== toast / live ===== */
+let toastT=0;
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),3200)}
+const say=t=>{const l=$('#live');l.textContent='';setTimeout(()=>l.textContent=t,30)};
+/* ===== DECK: swipe cu pointer events, rAF, arc ===== */
+function Deck(root,o){
+ const d={idx:o.start||0,busy:false,last:0};let top=null,pos={x:0,y:0},drag=null,raf=0,lastDir=1;
+ const W=()=>root.clientWidth||330,n=o.items.length;
+ function mount(){
+  root.innerHTML='';
+  for(let k=Math.min(d.idx+2,n-1);k>=d.idx;k--){const c=document.createElement('div');c.className='sc d'+(k-d.idx>0?1:0);c.style.setProperty('--h',o.items[k].h);c.dataset.i=k;c.innerHTML=o.render(o.items[k],k);
+   if(k===d.idx){c.setAttribute('role','group');c.setAttribute('aria-roledescription','cartonaș');c.setAttribute('aria-label',o.label(o.items[k],k))}else c.setAttribute('aria-hidden','true');root.appendChild(c)}
+  top=root.querySelector('.sc:last-child');pos={x:0,y:0};if(d.idx>=n)top=null;paint();o.onIdx&&o.onIdx(d.idx)}
+ function paint(){
+  const w=W(),x=pos.x,y=pos.y,cs=[...root.children];
+  const prog=clamp(Math.abs(x)/(w*.5),0,1);
+  cs.forEach(c=>{const dep=+c.dataset.i-d.idx;
+   if(dep===0){c.style.transform=`translate3d(${x}px,${y}px,0) rotate(${(x/w*16).toFixed(2)}deg)`;const yes=$('.stamp.yes',c),no=$('.stamp.no',c),p=clamp(x/(w*.3),0,1),q=clamp(-x/(w*.3),0,1);if(yes)yes.style.opacity=p;if(no)no.style.opacity=q}
+   else if(dep===1){c.style.transform=`translateY(${(14*(1-prog)).toFixed(1)}px) scale(${(.95+.05*prog).toFixed(3)})`}
+   else{c.style.transform=`translateY(${(28-14*prog).toFixed(1)}px) scale(${(.9+.05*prog).toFixed(3)})`}})}
+ function spring(vx0){
+  cancelAnimationFrame(raf);if(RM()){pos={x:0,y:0};paint();return}
+  let last=performance.now(),vx=vx0||0,vy=0;const k=230,c=16;
+  const st=t=>{const dt=Math.min(.032,(t-last)/1000);last=t;vx+=(-k*pos.x-c*vx)*dt;vy+=(-k*pos.y-c*vy)*dt;pos.x+=vx*dt;pos.y+=vy*dt;paint();
+   if(Math.abs(pos.x)<.4&&Math.abs(pos.y)<.4&&Math.abs(vx)<8&&Math.abs(vy)<8){pos={x:0,y:0};paint();return}raf=requestAnimationFrame(st)};
+  raf=requestAnimationFrame(st)}
+ function fly(dir){
+  if(d.busy||!top)return;d.busy=true;lastDir=dir;cancelAnimationFrame(raf);
+  const tx=dir*W()*1.5,x0=pos.x,y0=pos.y,ty=y0+dir*20,dur=RM()?0:320,t0=performance.now();
+  const yes=$('.stamp.yes',top),no=$('.stamp.no',top);
+  const fin=()=>{const item=o.items[d.idx],i=d.idx;d.idx++;d.busy=false;mount();o.onSwipe(item,dir,i);if(d.idx>=n)o.onEnd&&o.onEnd()};
+  if(!dur){if(dir>0&&yes)yes.style.opacity=1;if(dir<0&&no)no.style.opacity=1;fin();return}
+  const st=t=>{const k=clamp((t-t0)/dur,0,1),e=1-Math.pow(1-k,3);pos.x=x0+(tx-x0)*e;pos.y=y0+(ty-y0)*e;paint();
+   const sp=Math.max(Math.abs(pos.x)/(W()*.3),0);if(dir>0&&yes)yes.style.opacity=Math.min(1,sp);if(dir<0&&no)no.style.opacity=Math.min(1,sp);
+   if(k<1)raf=requestAnimationFrame(st);else fin()};
+  raf=requestAnimationFrame(st)}
+ root.addEventListener('pointerdown',e=>{if(d.busy||!top||!e.target.closest('.sc:last-child'))return;if(e.button>0)return;cancelAnimationFrame(raf);
+  try{top.setPointerCapture(e.pointerId)}catch(_){}drag={id:e.pointerId,x0:e.clientX-pos.x,y0:e.clientY-pos.y,vx:0,s:[{x:e.clientX,t:performance.now()}]};
+  const si=$('.sc-in',top);if(si){si.style.setProperty('--rx','0deg');si.style.setProperty('--ry','0deg')}});
+ root.addEventListener('pointermove',e=>{
+  if(drag&&e.pointerId===drag.id){const x=e.clientX-drag.x0,y=(e.clientY-drag.y0)*.45,now=performance.now();drag.s.push({x:e.clientX,t:now});while(drag.s.length>2&&now-drag.s[0].t>110)drag.s.shift();pos.x=x;pos.y=y;paint();return}
+  if(e.pointerType==='mouse'&&top&&!d.busy&&!RM()){const si=$('.sc-in',top),r=top.getBoundingClientRect();if(si&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){const px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;si.style.setProperty('--ry',(px*9).toFixed(1)+'deg');si.style.setProperty('--rx',(-py*7).toFixed(1)+'deg')}}});
+ const end=e=>{if(!drag||e.pointerId!==drag.id)return;const sm=drag.s,sp=sm[sm.length-1].t-sm[0].t,vx=sp>=40?(sm[sm.length-1].x-sm[0].x)/sp*1000:0;drag=null;const w=W();
+  if(e.type!=='pointercancel'&&(Math.abs(pos.x)>w*.3||(Math.abs(vx)>650&&Math.abs(pos.x)>30)))fly(pos.x>=0?1:-1);else spring(vx*.4)};
+ root.addEventListener('pointerup',end);root.addEventListener('pointercancel',end);
+ root.addEventListener('pointerleave',()=>{const si=top&&$('.sc-in',top);if(si){si.style.setProperty('--rx','0deg');si.style.setProperty('--ry','0deg')}});
+ d.swipe=dir=>fly(dir);
+ d.undo=()=>{if(d.busy||d.idx<=0)return false;d.idx--;mount();const it=o.items[d.idx];pos.x=lastDir*W()*1.2;pos.y=0;paint();
+  if(RM()){pos={x:0,y:0};paint()}else{d.busy=true;const x0=pos.x,t0=performance.now();const st=t=>{const k=clamp((t-t0)/380,0,1),e=1-Math.pow(1-k,3);pos.x=x0*(1-e);paint();if(k<1)raf=requestAnimationFrame(st);else{d.busy=false;pos={x:0,y:0};paint()}};raf=requestAnimationFrame(st)}
+  o.onUndo&&o.onUndo(it,d.idx);return true};
+ d.reset=()=>{d.idx=0;d.busy=false;mount()};
+ d.mount=mount;
+ d.fly=fly;
+ d.nudge=()=>{if(d.busy||drag||!top||RM())return;pos.x=44;pos.y=0;paint();spring(0)};
+ mount();
+ return d;
+}
+/* ===== navigare, foi ===== */
+let view='match';
+const scrim=$('#scrim');let openSh=null,lastFocus=null;
+function openSheet(id){closeSheet(true);lastFocus=document.activeElement;openSh=$('#'+id);openSh.classList.add('on');scrim.classList.add('on');setTimeout(()=>{const f=openSh&&(openSh.querySelector('input')||openSh.querySelector('button'));f&&f.focus({preventScroll:true})},60)}
+function closeSheet(quiet){if(!openSh)return;openSh.classList.remove('on');scrim.classList.remove('on');openSh=null;if(!quiet&&lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true})}
+scrim.addEventListener('click',()=>closeSheet());
+$$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeSheet()));
+function fitFlux(){const b=$('.fc-body',fluxEl);if(!b||!b.clientHeight)return;const k=Math.max(.62,Math.min(1,b.clientHeight/472));fluxEl.style.setProperty('--pk',k.toFixed(3))}
+function go(v){
+ view=v;$$('.view').forEach(x=>x.hidden=x.id!=='v-'+v);
+ $$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.go===v));
+ if(v==='flux'){fitFlux();fluxEl.scrollTop=cur*fluxEl.clientHeight;activate(cur,true)}
+ if(v==='lista')buildLista();
+ if(v==='match'&&!resShown){const it=SIT[deckM.idx];it&&setHue(it.h)}
+ if(v==='af'){const it=MYTHS[deckA.idx];it&&setHue(it.h)}
+ closeSheet(true);
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.go)));
+const setHue=h=>$('#phone').style.setProperty('--hue',h);
+/* ===== MATCH ===== */
+let deckM,resShown=false;
+function mCard(s){const g=s.g.length,real=s.g.includes('garantie');
+ return `<div class="sc-in"><div class="stamp yes">Mă privește</div><div class="stamp no">Nu</div><div class="glyph">${ic(s.ic)}</div><h2>${esc(s.t)}</h2><p class="sub">${esc(s.sub)}</p>
+ <span class="gd ${real?'real':''}">${real?ic('check')+'Are cartonașe în prototip':g?'Ghiduri pilot: '+g+' · fără cartonașe încă':'Niciun ghid pilot încă'}</span></div>`}
+function buildMatch(){
+ const v=$('#v-match');resShown=false;
+ v.innerHTML=`<div class="dk-head"><span>Situația <b id="mn">1</b> / ${SIT.length}</span><div class="dots" id="mdots" aria-hidden="true">${SIT.map(()=>'<i></i>').join('')}</div></div>
+ <div class="deck" id="deck-m"></div>
+ <div class="acts"><button class="rb n" id="m-no" aria-label="Nu mă privește">${ic('x')}</button><button class="rb sm" id="m-undo" aria-label="Înapoi la cartonașul anterior">${ic('undo')}</button><button class="rb y" id="m-yes" aria-label="Mă privește">${ic('check')}</button></div>
+ <p class="hint">Trage la dreapta dacă te privește, la stânga dacă nu. Sau folosește săgețile.</p>`;
+ deckM=Deck($('#deck-m'),{items:SIT,start:S.mo.length>=SIT.length?0:S.mo.length,render:mCard,
+  label:(s,i)=>`Situația ${i+1} din ${SIT.length}: ${s.t}. Trage la dreapta dacă te privește, la stânga dacă nu.`,
+  onIdx:i=>{const mn=$('#mn');if(mn)mn.textContent=Math.min(i+1,SIT.length);$$('#mdots i').forEach((e,k)=>e.classList.toggle('on',k<i));if(SIT[i]){setHue(SIT[i].h);}},
+  onSwipe:(s,dir,i)=>{S.m[s.id]=dir>0?1:0;S.mo=S.mo.slice(0,i);S.mo.push(s.id);save();blip(dir>0?660:330,.06);
+   const nx=SIT[i+1];say((dir>0?'Mă privește: ':'Nu mă privește: ')+s.t+'. '+(nx?'Următoarea: '+nx.t:'Gata, vezi Match-ul.'));},
+  onUndo:(s,i)=>{delete S.m[s.id];S.mo=S.mo.slice(0,i);save();say('Înapoi: '+s.t)},
+  onEnd:()=>{setTimeout(showResult,380)}});
+ $('#m-yes').onclick=()=>deckM.swipe(1);$('#m-no').onclick=()=>deckM.swipe(-1);$('#m-undo').onclick=()=>deckM.undo();
+ if(S.mo.length>=SIT.length)showResult(true);else if(!S.mo.length)setTimeout(()=>{if(view==='match'&&!resShown)deckM.nudge()},1100);
+}
+function constellation(yes){
+ const cx=170,cy=160,rx=136,ry=112,n=yes.length;
+ const guides=[];yes.forEach(s=>s.g.forEach(g=>{let o=guides.find(x=>x.id===g);if(!o)guides.push(o={id:g,n:0});o.n++}));
+ guides.sort((a,b)=>(b.id==='garantie')-(a.id==='garantie')||b.n-a.n);
+ let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+ let svg=`<svg id="const" viewBox="0 0 340 330" role="img" aria-label="Constelație: ${n} situații alese și ${guides.length} ghiduri potrivite">`;
+ for(let i=0;i<30;i++)svg+=`<circle class="st" cx="${(rnd()*340).toFixed(0)}" cy="${(rnd()*330).toFixed(0)}" r="${(.6+rnd()*1.1).toFixed(1)}" fill="#fff" style="animation-delay:-${(rnd()*4).toFixed(1)}s"/>`;
+ const sp=yes.map((s,i)=>{const a=-Math.PI/2+i*2*Math.PI/Math.max(n,1);return{s,x:cx+rx*Math.cos(a),y:cy+ry*Math.sin(a)}});
+ const gp=guides.map((g,i)=>{const m=guides.length,a=-Math.PI/2+Math.PI/m+i*2*Math.PI/m;return{g,x:cx+(m===1?0:58)*Math.cos(a),y:cy+(m===1?0:46)*Math.sin(a)+(m===1?0:0)}});
+ sp.forEach((p,i)=>{svg+=`<line class="ln" pathLength="1" x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="hsl(${p.s.h} 80% 65%)" stroke-opacity=".25" stroke-width="1" style="--d:${(.2+i*.12).toFixed(2)}s"/>`});
+ sp.forEach((p,i)=>p.s.g.forEach(g=>{const q=gp.find(z=>z.g.id===g);svg+=`<line class="ln" pathLength="1" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${q.x.toFixed(1)}" y2="${q.y.toFixed(1)}" stroke="hsl(${p.s.h} 85% 70%)" stroke-opacity=".7" stroke-width="1.6" style="--d:${(.7+i*.12).toFixed(2)}s"/>`}));
+ svg+=`<circle class="nd" cx="${cx}" cy="${cy}" r="20" fill="#ffd23f" style="--d:0s"/><text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="12" font-weight="900" fill="#1b1500">Tu</text>`;
+ sp.forEach((p,i)=>{const dl=(.1+i*.12).toFixed(2);svg+=`<g class="nd" style="--d:${dl}s"><circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="21" fill="hsl(${p.s.h} 55% 20%)" stroke="hsl(${p.s.h} 90% 68%)" stroke-width="2"/><svg x="${(p.x-11).toFixed(1)}" y="${(p.y-11).toFixed(1)}" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="hsl(${p.s.h} 95% 82%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-${p.s.ic}"/></svg><text x="${p.x.toFixed(1)}" y="${(p.y+35).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="#e7ecf8">${esc(p.s.k)}</text></g>`});
+ gp.forEach((q,i)=>{svg+=`<circle class="nd" cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="${q.g.id==='garantie'?9:6}" fill="${q.g.id==='garantie'?'#ffd23f':'#9099ae'}" style="--d:${(.9+i*.1).toFixed(2)}s"/>`});
+ return {svg:svg+'</svg>',guides}
+}
+function showResult(instant){
+ resShown=true;const v=$('#v-match'),yes=SIT.filter(s=>S.m[s.id]===1);const {svg,guides}=constellation(yes);
+ const res=document.createElement('div');res.id='res';
+ res.innerHTML=`<h2>Match!</h2><p class="lead">${yes.length?`Ai ales ${yes.length} ${yes.length===1?'situație':'situații'} · ${guides.length} ${guides.length===1?'ghid potrivit':'ghiduri potrivite'} <span style="color:#ffe9a0">(potrivire propusă)</span>`:'Nu ai ales nicio situație. Poți începe din nou.'}</p>${svg}
+ <div class="gl" aria-label="Ghiduri potrivite">${guides.map(g=>g.id==='garantie'?`<button class="gi real" data-open="1"><span class="t">${esc(GH[g.id])}<span class="n">Are cartonașe în prototip · ${g.n} ${g.n===1?'situație':'situații'}</span></span>${ic('cdown','')}</button>`:`<div class="gi"><span class="t">${esc(GH[g.id])}<span class="n">În prototip are cartonașe doar garanția locativă</span></span></div>`).join('')}</div>
+ <div class="row">${guides.some(g=>g.id==='garantie')?'<button class="btn pri" data-open="1">Vezi cartonașele garanției</button>':''}<button class="btn" id="m-again">Începe din nou</button></div>`;
+ v.appendChild(res);
+ $$('[data-open]',res).forEach(b=>b.onclick=()=>openFlux(0));
+ $('#m-again',res).onclick=()=>{S.m={};S.mo=[];save();buildMatch()};
+ setHue(yes.length?yes[0].h:210);
+ if(!instant){say('Match! '+yes.length+' situații alese.');try{navigator.vibrate&&navigator.vibrate([30,50,60])}catch(e){}blip(880,.15)}
+}
+/* ===== FLUX ===== */
+const fluxEl=$('#flux');let cur=0,ctl=[],io=null;
+function buildFlux(keep){
+ fluxEl.innerHTML=CARDS.map((c,i)=>`<section class="fc" id="fc${i}" style="--h:${c.h}" data-i="${i}" aria-roledescription="cartonaș" aria-label="Cartonaș ${i+1} din ${N}: ${esc(c.title)}">
+  <div class="fc-head"><span class="chip">${ic(c.ic)}${esc(c.tag)}</span><span class="fc-n">${i+1}/${N}</span><button class="nav" data-nv="-1" aria-label="Cartonașul anterior" ${i===0?'disabled':''}>${ic('cup')}</button><button class="nav" data-nv="1" aria-label="Cartonașul următor" ${i===N-1?'disabled':''}>${ic('cdown')}</button></div>
+  <h2>${esc(c.title)}</h2><div class="fc-body"></div><div class="fc-foot">${c.foot}</div></section>`).join('');
+ $('#prog').innerHTML=CARDS.map(()=>'<i></i>').join('');
+ ctl=CARDS.map((c,i)=>PAT[c.pat]($('.fc-body',$('#fc'+i)),c.data));
+ io&&io.disconnect();
+ io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>=.6&&view==='flux')activate(+e.target.dataset.i)}),{root:fluxEl,threshold:[.6]});
+ $$('.fc',fluxEl).forEach(s=>io.observe(s));
+ if(keep)fluxEl.scrollTop=cur*fluxEl.clientHeight;
+}
+function activate(i,force){
+ if(i===cur&&!force&&ctl[i]._on)return;
+ if(ctl[cur]&&cur!==i){ctl[cur].reset&&ctl[cur].reset();ctl[cur]._on=false}
+ cur=i;ctl[i]._on=true;S.seen[CARDS[i].id]=1;save();
+ ctl[i].play&&ctl[i].play();setHue(CARDS[i].h);barState();
+ $$('#prog i').forEach((e,k)=>{e.classList.toggle('on',k<i);e.classList.toggle('cur',k===i)});
+ say(`Cartonaș ${i+1} din ${N}: ${CARDS[i].title}`);
+ if($('#cab').classList.contains('on')&&false)0;
+}
+function barState(){const id=CARDS[cur].id;[['#a-fav','fav'],['#a-later','later']].forEach(([s,k])=>$(s).setAttribute('aria-pressed',!!S[k][id]));
+ $('#a-up').setAttribute('aria-pressed',S.vote[id]==='u');$('#a-dn').setAttribute('aria-pressed',S.vote[id]==='n');updBadge()}
+function updBadge(){const k=new Set([...Object.keys(S.fav),...Object.keys(S.later)]).size;$('#bd').textContent=k||''}
+function scrollToCard(i,instant){i=clamp(i,0,N-1);fluxEl.scrollTo({top:i*fluxEl.clientHeight,behavior:(instant||RM())?'auto':'smooth'})}
+function openFlux(i){closeSheet(true);if(ctl[cur]&&cur!==i){ctl[cur].reset&&ctl[cur].reset();ctl[cur]._on=false}cur=i;go('flux')}
+fluxEl.addEventListener('click',e=>{const b=e.target.closest('.nav');if(b)scrollToCard(cur+ +b.dataset.nv)});
+function relPos(e,box){const r=box.getBoundingClientRect(),s=r.width/box.offsetWidth||1;return{x:(e.clientX-r.left)/s,y:(e.clientY-r.top)/s}}
+function burst(x,y){
+ const b=document.createElement('div');b.className='burst';b.style.left=x+'px';b.style.top=y+'px';
+ let h=`<svg class="ic big" aria-hidden="true"><use href="#i-heart"/></svg>`;
+ if(!RM())for(let k=0;k<9;k++){const a=k/9*Math.PI*2,r=60+(k%3)*18;h+=`<svg class="ic sm" aria-hidden="true" style="--dx:${(Math.cos(a)*r).toFixed(0)}px;--dy:${(Math.sin(a)*r-16).toFixed(0)}px;--rt:${(k*40-120)}deg"><use href="#i-heart"/></svg>`}
+ b.innerHTML=h;$('#v-flux').appendChild(b);setTimeout(()=>b.remove(),900)}
+function setFav(on,pt){const id=CARDS[cur].id;if(on)S.fav[id]=1;else delete S.fav[id];save();barState();if(on){const r=pt||{x:150,y:300};burst(r.x,r.y);blip(740,.09)}}
+let tap=null;
+fluxEl.addEventListener('pointerdown',e=>{tap=tap&&{...tap,sx:e.clientX,sy:e.clientY}||{sx:e.clientX,sy:e.clientY};tap.down=performance.now()});
+fluxEl.addEventListener('pointerup',e=>{
+ if(e.target.closest('button,a,input,label,.hx,.dcard,.nd2'))return;if(!tap||Math.hypot(e.clientX-tap.sx,e.clientY-tap.sy)>12){tap=null;return}
+ const now=performance.now();
+ if(tap.t&&now-tap.t<340&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)<44){const p=relPos(e,$('#v-flux'));setFav(true,p);tap=null;return}
+ tap={t:now,x:e.clientX,y:e.clientY}});
+$('#a-fav').onclick=e=>{const id=CARDS[cur].id;const b=e.currentTarget.getBoundingClientRect(),v=$('#v-flux'),p=relPos({clientX:b.left+b.width/2-70,clientY:b.top+b.height/2},v);setFav(!S.fav[id],p)};
+$('#a-later').onclick=()=>{const id=CARDS[cur].id;if(S.later[id]){delete S.later[id];toast('Scos din „Mai târziu”.')}else{S.later[id]=1;toast('Salvat la „Mai târziu”, în Lista mea.')}save();barState();blip(500)};
+$('#a-up').onclick=()=>vote('u');$('#a-dn').onclick=()=>vote('n');
+function vote(k){const id=CARDS[cur].id;if(S.vote[id]===k)delete S.vote[id];else{S.vote[id]=k;toast(k==='u'?'Notat: util. Rămâne doar pe telefonul tău.':'Notat: neclar. Rămâne doar pe telefonul tău.')}save();barState()}
+/* ===== sursa ===== */
+function srcHTML(title,quotes,note){
+ return `<span class="vf">${ic('check')} Verificat la ${VERIF}</span><p style="font-weight:800;margin:0 0 10px">${esc(title)}</p>${quotes.map(q=>q.srcOnly?`<div class="q" style="border-color:#62adff;background:rgba(98,173,255,.08)">${esc(q.t)}<cite><a href="${SRC[q.s].u}" target="_blank" rel="noopener noreferrer">deschide sursa oficială</a> · verificat la ${VERIF}</cite></div>`:
+  `<blockquote class="q" style="margin-left:0;margin-right:0">„${esc(q.t)}”<cite>${q.r?esc(q.r)+' · ':''}${q.ss?esc(q.page)+'. Surse: '+q.ss.map(k=>esc(SRC[k].n)+' (<a href="'+SRC[k].u+'" target="_blank" rel="noopener noreferrer">sursa</a>)').join(' · '):q.s?esc(SRC[q.s].n)+' · <a href="'+SRC[q.s].u+'" target="_blank" rel="noopener noreferrer">deschide sursa</a>':esc(q.page||PAGE)} · verificat la ${VERIF}</cite></blockquote>`).join('')}
+ ${note?`<p style="font-size:12.5px;color:var(--mu)">${esc(note)}</p>`:''}<p style="font-size:12.5px;color:var(--mu)">Citatele vin din fișierul de reguli al paginii pilot. Textele de legătură sunt propuse, neaprobate. Prototip vizual: nu este informație oficială nouă.</p>`}
+$('#a-src').onclick=()=>{const c=CARDS[cur];$('#shr-t').textContent='Sursa';$('#src-b').innerHTML=srcHTML(c.title,c.quotes,c.note);openSheet('sh-src')};
+/* ===== share ===== */
+let shareBlob=null,shareText='',shareName='';
+function wrap(g,text,x,y,mw,lh,max){const words=text.split(' ');let line='',n=0;for(const w of words){const t=line?line+' '+w:w;if(g.measureText(t).width>mw&&line){g.fillText(line,x,y);y+=lh;line=w;if(++n>=max-1&&false)break}else line=t}g.fillText(line,x,y);return y+lh}
+function shareCanvas(c){
+ const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+ const F='system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+ let gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,`hsl(${c.h} 45% 18%)`);gr.addColorStop(1,'#090b11');g.fillStyle=gr;g.fillRect(0,0,W,H);
+ gr=g.createRadialGradient(W*.85,H*.12,10,W*.85,H*.12,620);gr.addColorStop(0,`hsla(${c.h},85%,58%,.45)`);gr.addColorStop(1,'transparent');g.fillStyle=gr;g.fillRect(0,0,W,H);
+ g.fillStyle='#f4f6fb';g.fillRect(72,78,14,52);g.fillStyle='#ffd23f';g.fillRect(90,78,14,52);g.fillStyle='#ff5a6b';g.fillRect(108,78,14,52);
+ g.fillStyle='#fff';g.font=`900 52px ${F}`;g.textBaseline='alphabetic';g.fillText('Info Belgia',142,120);
+ g.font=`800 34px ${F}`;const tag=c.tag.toUpperCase(),tw=g.measureText(tag).width+56;g.fillStyle=`hsla(${c.h},70%,55%,.28)`;g.beginPath();g.roundRect?g.roundRect(72,190,tw,64,32):g.rect(72,190,tw,64);g.fill();g.fillStyle=`hsl(${c.h} 100% 86%)`;g.fillText(tag,100,235);
+ let fs=230;g.font=`900 ${fs}px ${F}`;while(g.measureText(c.big).width>930&&fs>70){fs-=6;g.font=`900 ${fs}px ${F}`}
+ g.fillStyle='#ffd23f';g.fillText(c.big,72,560);
+ g.fillStyle='#fff';g.font=`900 72px ${F}`;let y=wrap(g,c.title,72,690,936,82);
+ g.fillStyle='#cfd6e8';g.font=`600 44px ${F}`;y=wrap(g,c.line,72,y+16,936,58);
+ g.fillStyle='rgba(255,255,255,.18)';g.fillRect(72,H-210,W-144,3);
+ g.fillStyle='#b5f5dc';g.font=`800 38px ${F}`;g.fillText('Verificat la '+VERIF,72,H-142);
+ g.fillStyle='#aab3c8';g.font=`600 30px ${F}`;g.fillText('Prototip vizual · cifre din pagina pilot, nu informație oficială nouă',72,H-90);
+ return cv}
+$('#a-share').onclick=()=>{
+ const c=CARDS[cur];shareCanvas(c);const cv=shareCanvas(c);shareText=`${c.title} — ${c.big}. ${c.line} Info Belgia · Verificat la ${VERIF} · prototip vizual, cifre din pagina pilot.`;shareName='info-belgia-'+c.id+'.png';shareBlob=null;
+ $('#shareprev').src=cv.toDataURL('image/png');cv.toBlob(b=>{shareBlob=b},'image/png');openSheet('sh-share')};
+function dl(){if(!shareBlob){toast('Imaginea nu e gata încă, mai încearcă o dată.');return false}const u=URL.createObjectURL(shareBlob),a=document.createElement('a');a.href=u;a.download=shareName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);return true}
+async function copyTxt(){try{await navigator.clipboard.writeText(shareText);return true}catch(e){try{const t=document.createElement('textarea');t.value=shareText;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();return ok}catch(_){return false}}}
+$('#sh-dl').onclick=()=>{if(dl())toast('Imaginea PNG a fost descărcată.')};
+$('#sh-cp').onclick=async()=>{toast(await copyTxt()?'Textul a fost copiat.':'Nu am putut copia. Selectează textul manual.')};
+$('#sh-send').onclick=async()=>{
+ if(!shareBlob){toast('Imaginea nu e gata încă, mai încearcă o dată.');return}
+ const f=new File([shareBlob],shareName,{type:'image/png'});
+ try{if(navigator.canShare&&navigator.share&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Info Belgia',text:shareText});toast('Trimis.');return}}catch(e){if(e&&e.name==='AbortError')return}
+ const a=dl(),b=await copyTxt();toast('Trimiterea directă nu merge aici. '+(a?'Am descărcat imaginea':'')+(a&&b?' și ':'')+(b?'am copiat textul.':'.'))};
+/* ===== ADEVĂRAT / FALS ===== */
+let deckA;
+MYTHS.forEach((m,i)=>m.h=[210,330,150,30,265,185][i]);
+function aCard(m){return `<div class="sc-in"><div class="stamp yes">Adevărat</div><div class="stamp no fal">Fals</div><div class="glyph">${ic('zap')}</div><h2 style="font-size:25px">${esc(m.q)}</h2><span class="gd">Mit sau adevăr? Trage și vezi sursa</span></div>`}
+function buildAF(){
+ const v=$('#v-af');
+ const done=MYTHS.filter(m=>m.id in S.af).length;
+ v.innerHTML=`<div class="dk-head"><span>Afirmația <b id="an">1</b> / ${MYTHS.length}</span><div class="dots" aria-hidden="true">${MYTHS.map(()=>'<i></i>').join('')}</div></div>
+ <div class="deck" id="deck-a"></div>
+ <div class="acts"><button class="rb f" id="a-fal" aria-label="Fals">${ic('x')}</button><button class="rb y" id="a-adv" aria-label="Adevărat">${ic('check')}</button></div>
+ <p class="hint">La dreapta: adevărat. La stânga: fals. Răspunsul vine cu sursa.</p>
+ <div id="af-fb" role="status" aria-live="polite"></div>`;
+ deckA=Deck($('#deck-a'),{items:MYTHS,start:0,render:aCard,
+  label:(m,i)=>`Afirmația ${i+1} din ${MYTHS.length}: ${m.q}. Dreapta adevărat, stânga fals.`,
+  onIdx:i=>{const an=$('#an');if(an)an.textContent=Math.min(i+1,MYTHS.length);$$('#v-af .dots i').forEach((e,k)=>e.classList.toggle('on',k<i));if(MYTHS[i]&&view==='af')setHue(MYTHS[i].h)},
+  onSwipe:(m,dir)=>{const ok=(dir>0)===m.a;S.af[m.id]=ok?1:0;save();blip(ok?740:300,.1);
+   const fb=$('#af-fb');fb.className=ok?'':'bad';fb.innerHTML=`<h3>${ic(ok?'check':'x')} ${ok?'Corect':'Nu chiar'}: era ${m.a?'adevărat':'fals'}</h3><p>${esc(m.why)}</p><div class="row" style="margin:0;justify-content:flex-start"><button class="btn" id="fb-src">${ic('book')}Arată sursa</button><button class="btn pri" id="fb-ok">Continuă</button></div>`;
+   requestAnimationFrame(()=>{fb.classList.add('on');$('#fb-ok').focus({preventScroll:true})});
+   $('#fb-src').onclick=()=>{$('#shr-t').textContent='Sursa';$('#src-b').innerHTML=srcHTML(m.q,m.quotes);openSheet('sh-src')};
+   $('#fb-ok').onclick=()=>{fb.classList.remove('on');if(deckA.idx>=MYTHS.length)aSummary()};
+   say((ok?'Corect. ':'Nu chiar. ')+m.why)}});
+ $('#a-adv').onclick=()=>{if(!afBusy())deckA.swipe(1)};$('#a-fal').onclick=()=>{if(!afBusy())deckA.swipe(-1)};
+}
+const afBusy=()=>$('#af-fb')&&$('#af-fb').classList.contains('on');
+function aSummary(){const k=MYTHS.filter(m=>S.af[m.id]).length;$('#deck-a').innerHTML=`<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px"><h2 style="font-size:64px;font-weight:900;letter-spacing:-.05em;color:var(--yel);line-height:1">${k}<small style="font-size:30px;color:var(--mu)"> din ${MYTHS.length}</small></h2><p style="color:var(--mu);max-width:260px">afirmații la care ai răspuns corect, față de pagina pilot.</p><button class="btn pri" id="af-again">Încearcă din nou</button></div>`;$('#af-again').onclick=()=>{S.af={};save();buildAF()}}
+/* ===== LISTA MEA ===== */
+function buildLista(){
+ const v=$('#v-lista'),seen=CARDS.filter(c=>S.seen[c.id]).length,doneN=['d1','d2','d3'].filter(k=>S.done[k]).length;
+ const row=(c,i,k)=>`<div class="li"><button class="ri" data-o="${i}">${ic(c.ic)}<span>${esc(c.title)}<small style="display:block;color:var(--mu);font-weight:500;font-size:11.5px">Cartonaș ${i+1} · ${esc(c.tag)}</small></span></button><button class="x" data-rm="${k}:${c.id}" aria-label="Scoate din listă: ${esc(c.title)}">${ic('x')}</button></div>`;
+ const fav=CARDS.map((c,i)=>S.fav[c.id]?row(c,i,'fav'):'').join(''),lat=CARDS.map((c,i)=>S.later[c.id]?row(c,i,'later'):'').join('');
+ const yes=SIT.filter(s=>S.m[s.id]===1);
+ v.innerHTML=`<h2>Lista mea</h2>
+ <div class="coll"><div style="flex:1"><b>Ai descoperit ${seen} din ${N} cartonașe</b><div class="sg2" aria-hidden="true">${CARDS.map(c=>`<i class="${S.seen[c.id]?'on':''}"></i>`).join('')}</div></div>${ringHTML(doneN/3,doneN+'/3',54)}</div>
+ <p style="font-size:11.5px;color:var(--mu);margin:2px 4px 0">Inelul: „Am făcut” din ultimul cartonaș (${doneN} din 3).</p>
+ <div class="ls"><h3>${ic('heart')} Favorite</h3>${fav||'<div class="em">Încă nimic. În Flux apasă ♥ sau dă dublu-tap pe un cartonaș.</div>'}
+ <h3>${ic('bookmark')} Mai târziu</h3>${lat||'<div class="em">Încă nimic. În Flux apasă „Mai târziu”.</div>'}
+ <h3>${ic('cards')} Situațiile mele</h3>${yes.length?`<div class="sit">${yes.map(s=>`<span>${esc(s.t)}</span>`).join('')}</div>`:'<div class="em">Alege situații în Match și apar aici.</div>'}</div>
+ <div class="row" style="justify-content:flex-start"><button class="btn dng" id="l-wipe">${ic('trash')}Șterge tot</button></div>`;
+ $$('[data-o]',v).forEach(b=>b.onclick=()=>openFlux(+b.dataset.o));
+ $$('[data-rm]',v).forEach(b=>b.onclick=()=>{const [k,id]=b.dataset.rm.split(':');delete S[k][id];save();buildLista();updBadge();barState()});
+ $('#l-wipe').onclick=()=>openSheet('sh-menu');
+}
+/* ===== CĂUTARE ===== */
+const IDX=[...CARDS.map((c,i)=>({t:'card',title:c.title,sub:c.tag+' · cartonaș '+(i+1),n:norm(c.title+' '+c.tag+' '+c.kw),go:()=>openFlux(i)})),
+ ...Object.keys(GH).map(k=>({t:'guide',title:GH[k],sub:k==='garantie'?'Are cartonașe în prototip':'În prototip are cartonașe doar garanția locativă',n:norm(GH[k]+(k==='garantie'?' garantie chirie locativa':'')),go:k==='garantie'?()=>openFlux(0):null})),
+ ...MYTHS.map(m=>({t:'myth',title:m.q,sub:'Adevărat sau fals',n:norm(m.q+' mit adevarat fals'),go:()=>{closeSheet(true);go('af')}})),
+ ...SIT.map(s=>({t:'sit',title:s.t,sub:'Situație din Match',n:norm(s.t+' '+s.sub),go:()=>{closeSheet(true);go('match')}}))];
+const GROUPS={card:'Cartonașe',guide:'Ghiduri',myth:'Adevărat sau fals',sit:'Situații'};
+function hl(text,toks){const nt=norm(text);if(nt.length!==text.length)return esc(text);let marks=[];toks.forEach(t=>{let i=nt.indexOf(t);if(i>=0)marks.push([i,i+t.length])});if(!marks.length)return esc(text);marks.sort((a,b)=>a[0]-b[0]);let out='',p=0;for(const [a,b] of marks){if(a<p)continue;out+=esc(text.slice(p,a))+'<mark>'+esc(text.slice(a,b))+'</mark>';p=b}return out+esc(text.slice(p))}
+function doSearch(){
+ const q=$('#q').value.trim(),rs=$('#rs');
+ if(!q){rs.innerHTML='';return}
+ const toks=norm(q).split(/\s+/).filter(Boolean),hits=IDX.filter(e=>toks.every(t=>e.n.includes(t)));
+ if(!hits.length){rs.innerHTML='<div class="em">Nimic găsit pentru „'+esc(q)+'”. Încearcă „garanție”, „termen” sau „acte”.</div>';return}
+ rs.innerHTML=Object.keys(GROUPS).map(g=>{const h=hits.filter(e=>e.t===g);return h.length?`<h4>${GROUPS[g]} (${h.length})</h4>`+h.map(e=>`<button class="ri" data-k="${IDX.indexOf(e)}"><span>${hl(e.title,toks)}<small>${esc(e.sub)}</small></span></button>`).join(''):''}).join('');
+ $$('.ri',rs).forEach(b=>b.onclick=()=>{const e=IDX[+b.dataset.k];if(e.go)e.go();else toast('În prototip are cartonașe doar garanția locativă.')});
+ say(hits.length+' rezultate')
+}
+$('#sugg').innerHTML=['garanție','chirie','termen','capcană','acte','Flandra','800 €'].map(s=>`<button class="sg">${s}</button>`).join('');
+$$('#sugg .sg').forEach(b=>b.onclick=()=>{$('#q').value=b.textContent;doSearch();$('#q').focus({preventScroll:true})});
+$('#q').addEventListener('input',doSearch);
+$('#b-search').onclick=()=>{openSheet('sh-search');doSearch()};
+/* ===== MOD ÎN CABINĂ ===== */
+const cab=$('#cab');let cabI=0,speaking=false,tok=0,cabTimer=0;
+const hasTTS='speechSynthesis' in window&&'SpeechSynthesisUtterance' in window;
+function cabMsg(t){const m=$('#cab-msg');m.hidden=!t;m.textContent=t||''}
+function cabFill(){const c=CARDS[cabI];$('#cab-n').textContent=`Cartonaș ${cabI+1} din ${N}`;const t=$('#cab-tag');t.style.setProperty('--h',c.h);t.innerHTML=ic(c.ic)+esc(c.tag);$('#cab-big').textContent=c.big;$('#cab-ti').textContent=c.title;$('#cab-su').textContent=c.line;
+ $('#cab-pv').disabled=cabI===0;$('#cab-nx').disabled=cabI===N-1;cabUi()}
+function cabUi(){cab.classList.toggle('speaking',speaking);$('#cab-go span').textContent=speaking?'Oprește citirea':'Citește cu voce tare';$('#cab-go').firstElementChild.innerHTML=`<use href="#i-${speaking?'stop':'vol'}"/>`}
+function roVoice(){try{return speechSynthesis.getVoices().find(v=>/^ro([-_]|$)/i.test(v.lang))}catch(e){return null}}
+function cabStop(){tok++;clearTimeout(cabTimer);speaking=false;if(hasTTS)try{speechSynthesis.cancel()}catch(e){}cabUi()}
+function cabRead(){
+ if(speaking){cabStop();return}
+ if(!hasTTS){cabMsg('Browserul acesta nu are citire cu voce. Poți citi textul mare de pe ecran.');return}
+ const c=CARDS[cabI],u=new SpeechSynthesisUtterance(c.speak),v=roVoice(),my=++tok;
+ if(v){u.voice=v;u.lang=v.lang;cabMsg('')}else{u.lang='ro-RO';cabMsg('Nu am găsit o voce în română pe acest telefon. Citirea poate suna greșit; poți citi și textul mare.')}
+ u.rate=.95;
+ u.onend=()=>{if(my!==tok)return;speaking=false;cabUi();
+  cabTimer=setTimeout(()=>{if(!cab.classList.contains('on'))return;if(cabI<N-1){cabI++;cabFill();cabRead()}else cabMsg('Gata, ai ajuns la ultimul cartonaș.')},1200)};
+ u.onerror=()=>{if(my!==tok)return;speaking=false;cabUi();cabMsg('Citirea nu a pornit. Poți citi textul mare.')};
+ try{speechSynthesis.cancel();speechSynthesis.speak(u);speaking=true;cabUi()}catch(e){cabMsg('Citirea nu a pornit.')}}
+function cabOpen(){closeSheet(true);cabI=cur;cabMsg(hasTTS?'':'Browserul acesta nu are citire cu voce. Poți citi textul mare de pe ecran.');cabFill();cab.classList.add('on');setTimeout(()=>$('#cab-go').focus({preventScroll:true}),50)}
+function cabClose(){cabStop();cab.classList.remove('on');openFlux(cabI);$('#b-cab').focus({preventScroll:true})}
+$('#b-cab').onclick=cabOpen;$('#cab-x').onclick=cabClose;$('#cab-go').onclick=cabRead;$('#cab-b').onclick=()=>{cabStop()};
+$('#cab-pv').onclick=()=>{cabStop();cabI=Math.max(0,cabI-1);cabFill()};$('#cab-nx').onclick=()=>{cabStop();cabI=Math.min(N-1,cabI+1);cabFill()};
+if(hasTTS&&speechSynthesis.addEventListener)speechSynthesis.addEventListener('voiceschanged',()=>{});
+/* ===== meniu / setări / șterge ===== */
+$('#b-menu').onclick=()=>{$('#sw-snd').setAttribute('aria-checked',S.sound);$('#sw-rm').setAttribute('aria-checked',S.rm);openSheet('sh-menu')};
+$('#sw-snd').onclick=e=>{S.sound=!S.sound;e.currentTarget.setAttribute('aria-checked',S.sound);save();if(S.sound)blip(660,.1)};
+$('#sw-rm').onclick=e=>{S.rm=!S.rm;e.currentTarget.setAttribute('aria-checked',S.rm);document.documentElement.classList.toggle('rm',S.rm);save();buildFlux(true);activate(cur,true)};
+let wipeArm=0;
+$('#b-wipe').onclick=()=>{const b=$('#b-wipe'),sp=$('span',b);
+ if(!wipeArm){wipeArm=setTimeout(()=>{wipeArm=0;sp.textContent='Șterge tot'},4000);sp.textContent='Sigur? Apasă încă o dată';return}
+ clearTimeout(wipeArm);wipeArm=0;sp.textContent='Șterge tot';try{localStorage.removeItem(KEY)}catch(e){}S=defaults();mem=null;document.documentElement.classList.remove('rm');
+ cur=0;buildMatch();buildFlux();buildAF();updBadge();closeSheet(true);go('match');toast('Am șters tot de pe acest telefon.')};
+/* ===== tastatură ===== */
+addEventListener('keydown',e=>{
+ if(e.key==='Tab'&&openSh){const f=$$('button:not(:disabled),input,a[href]',openSh).filter(x=>x.offsetParent!==null);if(f.length){const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus({preventScroll:true})}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus({preventScroll:true})}}return}
+ if(e.key==='Escape'){if(openSh){closeSheet();return}if(cab.classList.contains('on')){cabClose();return}}
+ if(openSh||cab.classList.contains('on'))return;
+ if(e.target.matches&&e.target.matches('input,textarea,select'))return;
+ if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const d=e.key==='ArrowRight'?1:-1;
+  if(view==='match'&&!resShown){e.preventDefault();deckM.swipe(d)}else if(view==='af'&&!afBusy()){e.preventDefault();deckA.swipe(d)}}
+ else if(view==='flux'){
+  if(['ArrowDown','PageDown'].includes(e.key)){e.preventDefault();scrollToCard(cur+1)}
+  else if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();scrollToCard(cur-1)}
+  else if(e.key==='f'||e.key==='F'){setFav(!S.fav[CARDS[cur].id],{x:195,y:300})}}
+});
+/* ===== încadrare pe desktop ===== */
+function fit(){const ph=$('#phone');if(innerWidth>520){ph.style.setProperty('--sc',Math.min(1,(innerHeight-24)/866).toFixed(3))}else ph.style.removeProperty('--sc')}
+addEventListener('resize',()=>{fit();fitFlux()});fit();
+/* ===== pornire ===== */
+buildMatch();buildFlux();buildAF();updBadge();
+window.__sb={get S(){return S},go,openFlux,CARDS,SIT,MYTHS,get deckM(){return deckM},get deckA(){return deckA},get cur(){return cur},daysUntil};
+</script></body></html>

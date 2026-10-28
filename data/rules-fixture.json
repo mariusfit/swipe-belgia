@@ -1,0 +1,86 @@
+{
+  "facts": [
+    {
+      "id": "f-vl",
+      "kind": "cap",
+      "claimKey": "step:flanders-2019-cap",
+      "field": "step:flanders-2019-cap:body",
+      "quote": "Pentru contractele încheiate de la 1 ianuarie 2019, plafonul este trei luni.",
+      "value": 3,
+      "unit": "luni de chirie",
+      "validFrom": "2019-01-01",
+      "sourceRefs": ["vl-rent"]
+    },
+    {
+      "id": "f-bxl",
+      "kind": "cap",
+      "claimKey": "step:brussels-2024-cap",
+      "field": "step:brussels-2024-cap:body",
+      "quote": "Pentru contractele încheiate sau reînnoite de la 1 noiembrie 2024, plafonul este două luni de chirie.",
+      "value": 2,
+      "unit": "luni de chirie",
+      "validFrom": "2024-11-01",
+      "sourceRefs": ["bxl-rent"]
+    },
+    {
+      "id": "f-wal",
+      "kind": "cap",
+      "claimKey": "step:wallonia-2023-cap",
+      "field": "step:wallonia-2023-cap:body",
+      "quote": "Din 1 iunie 2023, garanția pentru reședința principală este limitată la două luni.",
+      "value": 2,
+      "unit": "luni de chirie",
+      "validFrom": "2023-06-01",
+      "sourceRefs": ["wal-rent-2023"]
+    },
+    {
+      "id": "f-dg",
+      "kind": "cap",
+      "claimKey": "step:german-speaking-community-cap",
+      "field": "step:german-speaking-community-cap:body",
+      "quote": "un plafon de maximum două luni de chirie",
+      "value": 2,
+      "unit": "luni de chirie",
+      "sourceRefs": ["dg-rent-guarantee"]
+    },
+    {
+      "id": "f-no-wide-formula",
+      "kind": "threshold",
+      "claimKey": "warning:no-belgium-wide-formula",
+      "field": "warning:no-belgium-wide-formula:text",
+      "quote": "Belgia nu are o singură formulă pentru garanția locativă; verifică regiunea și data contractului înainte să calculezi suma.",
+      "sourceRefs": ["vl-rent", "bxl-rent", "wal-rent-2023", "dg-rent-guarantee"]
+    }
+  ],
+  "graphics": [
+    {
+      "id": "g-garantie",
+      "type": "region-bars",
+      "title": "c-chart-title",
+      "factIds": ["f-vl", "f-bxl", "f-wal", "f-dg"],
+      "calc": {
+        "kind": "cap-times-input",
+        "input": {
+          "id": "chirie",
+          "min": 300,
+          "max": 2000,
+          "step": 50,
+          "default": 800,
+          "isExample": true,
+          "label": "c-chirie"
+        }
+      },
+      "expect": [
+        {
+          "input": 800,
+          "outputs": {
+            "vl": 2400,
+            "bxl": 1600,
+            "wal": 1600,
+            "dg": 1600
+          }
+        }
+      ]
+    }
+  ]
+}
